@@ -1,299 +1,897 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dijital Randevu Sistemleri | Temassız Girişim</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: { 500: '#D4AF37', 600: '#C5A028', 700: '#AA820A', 800: '#8A6908' }
-                    },
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
-                }
-            }
-        }
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temassız Girişim | Dijital Randevu Sistemleri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pine: #1B4332;
+      --pine-dark: #122E22;
+      --pine-light: #2D6A4F;
+      --pine-tint: #F1F7F4;
+      --gold: #D4AF37;
+      --gold-dark: #B59224;
+      --gold-tint: #FBF7E8;
+      --bg: #FFFFFF;
+      --surface: #F9FAFB;
+      --border: #E5E7EB;
+      --text: #111827;
+      --muted: #6B7280;
+      --danger: #DC2626;
+      --danger-bg: #FEF2F2;
+      --success: #059669;
+      --success-bg: #ECFDF5;
+      --warning: #D97706;
+      --warning-bg: #FFFBEB;
+      --radius: 14px;
+      --shadow: 0 10px 25px -5px rgba(27, 67, 50, 0.08), 0 4px 10px -3px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, .serif {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    /* Top Brand & Panel Switcher Bar */
+    .topbar {
+      background: var(--pine);
+      color: #FFFFFF;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 2px solid var(--gold);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), #F3D97E);
+      color: var(--pine-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .brand-sub {
+      font-size: 0.72rem;
+      color: #D1FAE5;
+      opacity: 0.9;
+    }
+
+    .panel-switcher {
+      display: flex;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .panel-switcher {
+        width: auto;
+      }
+    }
+
+    .switch-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: #E5E7EB;
+      padding: 9px 14px;
+      border-radius: 9px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .switch-btn.active {
+      background: var(--gold);
+      color: var(--pine-dark);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .switch-btn:not(.active):hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #FFFFFF;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+      flex: 1;
+    }
+
+    /* Business Hero Card */
+    .salon-hero {
+      background: linear-gradient(135deg, var(--pine) 0%, var(--pine-dark) 100%);
+      color: #FFFFFF;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 22px;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .salon-hero {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 26px 30px;
+      }
+    }
+
+    .salon-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(212, 175, 55, 0.18);
+      border: 1px solid var(--gold);
+      color: #FDE68A;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .salon-hero h1 {
+      font-size: 1.55rem;
+      line-height: 1.25;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+
+    @media (min-width: 768px) {
+      .salon-hero h1 {
+        font-size: 1.9rem;
+      }
+    }
+
+    .salon-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 0.85rem;
+      color: #E5E7EB;
+    }
+
+    .salon-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 11px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 11px 18px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--pine);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background: var(--pine-light);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: var(--pine-dark);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-gold:hover {
+      background: var(--gold-dark);
+      color: #FFFFFF;
+    }
+
+    .btn-outline {
+      background: #FFFFFF;
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--pine);
+      background: var(--pine-tint);
+    }
+
+    .btn-outline-light {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #FFFFFF;
+    }
+
+    .btn-outline-light:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-whatsapp {
+      background: #16A34A;
+      color: #FFFFFF;
+    }
+
+    .btn-whatsapp:hover {
+      background: #15803D;
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-color: #FECACA;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #FFFFFF;
+    }
+
+    .btn-sm {
+      padding: 7px 12px;
+      font-size: 0.8rem;
+      border-radius: 8px;
+    }
+
+    /* Cards & Step Sections */
+    .card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--pine);
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--pine-dark);
+    }
+
+    /* Service Grid */
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .service-item {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #FFFFFF;
+    }
+
+    .service-item:hover {
+      border-color: var(--pine-light);
+      background: var(--pine-tint);
+    }
+
+    .service-item.selected {
+      border-color: var(--pine);
+      background: var(--pine-tint);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
+    }
+
+    .service-name {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 0.96rem;
+      margin-bottom: 4px;
+    }
+
+    .service-dur {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .service-price {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--pine);
+      background: var(--gold-tint);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      padding: 6px 11px;
+      border-radius: 9px;
+      white-space: nowrap;
+    }
+
+    /* Staff Pills */
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .staff-card {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #FFFFFF;
+    }
+
+    .staff-card:hover {
+      border-color: var(--pine-light);
+    }
+
+    .staff-card.selected {
+      border-color: var(--pine);
+      background: var(--pine-tint);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
+    }
+
+    .staff-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--pine);
+      color: var(--gold);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 8px;
+      font-size: 0.95rem;
+    }
+
+    .staff-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .staff-role {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* Horizontal Date Strip */
+    .date-strip {
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      scrollbar-width: thin;
+    }
+
+    .date-pill {
+      min-width: 74px;
+      padding: 10px 8px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: #FFFFFF;
+      text-align: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.18s ease;
+    }
+
+    .date-pill:hover {
+      border-color: var(--pine-light);
+    }
+
+    .date-pill.selected {
+      background: var(--pine);
+      border-color: var(--pine);
+      color: #FFFFFF;
+      box-shadow: 0 4px 10px rgba(27, 67, 50, 0.22);
+    }
+
+    .date-pill .day-name {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .date-pill .day-num {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 2px 0;
+    }
+
+    .date-pill .month-name {
+      font-size: 0.72rem;
+      color: var(--gold-dark);
+      font-weight: 600;
+    }
+
+    .date-pill.selected .month-name {
+      color: var(--gold);
+    }
+
+    /* Time Slot Grid */
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    @media (min-width: 480px) {
+      .time-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (min-width: 768px) {
+      .time-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    .time-slot {
+      padding: 11px 6px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      color: var(--text);
+    }
+
+    .time-slot:hover:not(:disabled) {
+      border-color: var(--pine);
+      background: var(--pine-tint);
+    }
+
+    .time-slot.selected {
+      background: var(--gold);
+      border-color: var(--gold-dark);
+      color: var(--pine-dark);
+      font-weight: 700;
+    }
+
+    .time-slot:disabled {
+      background: #F3F4F6;
+      color: #9CA3AF;
+      border-color: #E5E7EB;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .time-slot small {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .form-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.94rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: #FFFFFF;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--pine);
+      box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.12);
+    }
+
+    /* Summary Box */
+    .booking-summary-bar {
+      background: var(--pine-tint);
+      border: 1.5px solid var(--pine);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    @media (min-width: 768px) {
+      .booking-summary-bar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    /* Admin Dashboard Styles */
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .admin-tab-btn {
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.86rem;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+
+    .admin-tab-btn.active {
+      background: var(--pine);
+      color: #FFFFFF;
+      border-color: var(--pine);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .stat-val {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--pine-dark);
+    }
+
+    /* Appointment Cards */
+    .apt-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      background: #FFFFFF;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .apt-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-pending {
+      background: var(--warning-bg);
+      color: var(--warning);
+      border: 1px solid #FDE68A;
+    }
+
+    .badge-confirmed {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid #A7F3D0;
+    }
+
+    .badge-completed {
+      background: var(--pine-tint);
+      color: var(--pine);
+      border: 1px solid #A7F3D0;
+    }
+
+    .badge-cancelled {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #FECACA;
+    }
+
+    .apt-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.65);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 60;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #FFFFFF;
+      border-radius: 18px;
+      max-width: 480px;
+      width: 100%;
+      padding: 24px;
+      border: 2px solid var(--gold);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.25);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      left: 16px;
+      z-index: 80;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+      gap: 8px;
+    }
+
+    @media (min-width: 640px) {
+      .toast-container {
+        left: auto;
+        align-items: flex-end;
+      }
+    }
+
+    .toast {
+      background: var(--pine-dark);
+      color: #FFFFFF;
+      border-left: 4px solid var(--gold);
+      padding: 12px 18px;
+      border-radius: 11px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: slideUp 0.25s ease;
+      max-width: 420px;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .pin-gate {
+      max-width: 420px;
+      margin: 30px auto;
+      text-align: center;
+    }
+
+    footer {
+      background: #F9FAFB;
+      border-top: 1px solid var(--border);
+      padding: 18px 16px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+  </style>
 </head>
-<body class="bg-white text-gray-900 font-sans antialiased selection:bg-gold-500 selection:text-white">
+<body>
 
-    <!-- ÜST MENÜ (3 Panelli Geçiş Kontrolü) -->
-    <header class="border-b border-gray-100 sticky top-0 bg-white/95 backdrop-blur-md z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPanel('kurulum')">
-                <div class="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center border border-gold-500 shadow-md">
-                    <i class="fa-solid fa-calendar-check text-gold-500 text-lg"></i>
-                </div>
-                <div>
-                    <span class="text-lg font-extrabold tracking-tight font-serif block text-gray-900">
-                        Dijital <span class="text-gold-600">Randevu Sistemleri</span>
-                    </span>
-                    <span class="text-[10px] uppercase tracking-widest text-gold-700 font-semibold block -mt-1">Temassız Girişim</span>
-                </div>
-            </div>
-
-            <!-- Panel Geçiş Butonları -->
-            <div class="flex items-center space-x-2 overflow-x-auto py-2">
-                <button onclick="switchPanel('kurulum')" id="btnKurulum" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gray-900 text-gold-400 border border-gold-500/40 transition-all whitespace-nowrap">
-                    <i class="fa-solid fa-file-pen mr-1"></i> 1. İşletme Kayıt / Kurulum
-                </button>
-                <button onclick="switchPanel('yonetim')" id="btnYonetim" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gray-50 text-gray-700 border border-gray-200 hover:border-gold-500 transition-all whitespace-nowrap">
-                    <i class="fa-solid fa-chart-line mr-1"></i> 2. İşletme Paneli (Yönetim)
-                </button>
-                <button onclick="switchPanel('randevu')" id="btnRandevu" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-gray-50 text-gray-700 border border-gray-200 hover:border-gold-500 transition-all whitespace-nowrap">
-                    <i class="fa-solid fa-users mr-1"></i> 3. Müşteri Randevu Ekranı
-                </button>
-            </div>
+  <!-- Üst Navigasyon & Panel Değiştirici -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">TG</div>
+        <div>
+          <div class="brand-title">Temassız Girişim</div>
+          <div class="brand-sub">Dijital Randevu & İşletme Sistemleri</div>
         </div>
-    </header>
+      </div>
 
+      <nav class="panel-switcher" aria-label="Panel Seçimi">
+        <button type="button" id="btnSwitchCustomer" class="switch-btn active" onclick="switchPanel('customer')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Müşteri Randevu Paneli
+        </button>
+        <button type="button" id="btnSwitchAdmin" class="switch-btn" onclick="switchPanel('admin')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          İşletmeci Yönetim Paneli
+        </button>
+      </nav>
+    </div>
+  </header>
 
-    <!-- 1. PANEL: İŞLETME KAYIT VE KURULUM PANELİ (Shopier Sonrası Müşterinin Girdiği Yer) -->
-    <section id="panelKurulum" class="py-12 lg:py-16">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-10">
-                <span class="inline-flex items-center space-x-1.5 py-1.5 px-4 rounded-full bg-gold-500/10 text-gold-800 text-xs font-bold tracking-wider uppercase mb-3 border border-gold-500/30">
-                    <i class="fa-solid fa-store text-gold-600"></i> Kurulum & Tanımlama Ekranı
-                </span>
-                <h1 class="text-3xl font-extrabold font-serif tracking-tight text-gray-900 mb-2">
-                    Salon Bilgilerini Tanımla
-                </h1>
-                <p class="text-sm text-gray-600">
-                    Shopier üzerinden paketini aldın. Şimdi bilgilerini girerek dijital randevu sistemini anında aktif et!
-                </p>
-            </div>
+  <main class="container">
 
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-xl">
-                <form onsubmit="saveBusinessInfo(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">İşletme / Salon Adı</label>
-                            <input type="text" id="inputSalonAdi" required placeholder="Örn: Karizma Kuaför" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm font-medium">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">İşletme Telefonu</label>
-                            <input type="tel" id="inputTel" required placeholder="05XX XXX XX XX" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm font-medium">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Salon Adresi / Konum</label>
-                        <input type="text" id="inputAdres" required placeholder="Örn: Samandıra, Sancaktepe / İstanbul" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm font-medium">
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Çalışma Saatleri</label>
-                            <input type="text" id="inputSaat" required value="09:00 - 21:00" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm font-medium">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Seçilen Paket Türü</label>
-                            <select class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm bg-white font-medium">
-                                <option>Tek Seferlik Kurulum Paketi</option>
-                                <option>12 Aylık Kurumsal Paket</option>
-                                <option>NFC Kart + Kurulum Paketi (Tam Set)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="pt-4">
-                        <button type="submit" class="w-full py-4 px-6 rounded-xl bg-gray-900 text-gold-400 font-bold hover:bg-black transition-all shadow-lg flex items-center justify-center space-x-2 border border-gold-500/50">
-                            <i class="fa-solid fa-check-circle text-gold-500"></i>
-                            <span>Sistemi Kaydet ve Paneli Aç</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- 2. PANEL: İŞLETME YÖNETİM PANELİ (İşletmecinin Randevuları Gördüğü Yer) -->
-    <section id="panelYonetim" class="py-12 lg:py-16 hidden">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-4 border-b border-gray-200 gap-4">
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-gold-700">İşletme Yönetim Paneli</span>
-                    <h2 id="yönetimSalonAdi" class="text-2xl sm:text-3xl font-extrabold font-serif text-gray-900">Karizma Kuaför</h2>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <span class="px-3 py-1.5 bg-green-50 text-green-700 rounded-xl text-xs font-bold border border-green-200">
-                        <i class="fa-solid fa-circle text-[8px] mr-1 text-green-500"></i> Sistem Aktif (7/24)
-                    </span>
-                    <button onclick="switchPanel('randevu')" class="px-4 py-2 bg-gold-500 text-gray-900 font-bold rounded-xl text-xs hover:bg-gold-600 transition-all shadow-sm">
-                        <i class="fa-solid fa-link mr-1"></i> Müşteri Linkini Gör
-                    </button>
-                </div>
-            </div>
-
-            <!-- İstatistik Kartları -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                    <div class="text-gray-500 text-xs font-bold uppercase mb-1">Bugünkü Randevular</div>
-                    <div class="text-3xl font-extrabold font-serif text-gray-900">6</div>
-                    <div class="text-[11px] text-green-600 mt-1"><i class="fa-solid fa-arrow-up"></i> Son randevu 10 dk önce alındı</div>
-                </div>
-                <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                    <div class="text-gray-500 text-xs font-bold uppercase mb-1">Aktif Personel</div>
-                    <div class="text-3xl font-extrabold font-serif text-gray-900">3 Usta</div>
-                    <div class="text-[11px] text-gray-500 mt-1">Ahmet, Mehmet, Can</div>
-                </div>
-                <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                    <div class="text-gray-500 text-xs font-bold uppercase mb-1">Ödeme Yöntemi</div>
-                    <div class="text-xl font-bold text-gold-700 mt-1">Dükkanda Nakit / Kart</div>
-                    <div class="text-[11px] text-gray-500 mt-1">Online komisyon yok</div>
-                </div>
-            </div>
-
-            <!-- Gelen Randevular Tablosu -->
-            <div class="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden p-6">
-                <h3 class="text-lg font-bold font-serif text-gray-900 mb-4 flex items-center justify-between">
-                    <span>Gelen Son Randevular</span>
-                    <i class="fa-solid fa-list-check text-gold-600"></i>
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-gray-50 text-gray-700 uppercase tracking-wider">
-                            <tr>
-                                <th class="p-3.5 rounded-l-xl">Müşteri Adı</th>
-                                <th class="p-3.5">Telefon</th>
-                                <th class="p-3.5">Hizmet</th>
-                                <th class="p-3.5">Saat</th>
-                                <th class="p-3.5 rounded-r-xl">Durum</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100 text-gray-800 font-medium">
-                            <tr>
-                                <td class="p-3.5 font-bold">Emre Demir</td>
-                                <td class="p-3.5 text-gray-500">0532 *** ** **</td>
-                                <td class="p-3.5">Saç + Sakal Kesimi</td>
-                                <td class="p-3.5 font-bold text-gold-700">Bugün, 14:00</td>
-                                <td class="p-3.5"><span class="px-2.5 py-1 bg-yellow-50 text-yellow-800 rounded-lg font-bold">Onaylandı</span></td>
-                            </tr>
-                            <tr>
-                                <td class="p-3.5 font-bold">Burak Yılmaz</td>
-                                <td class="p-3.5 text-gray-500">0541 *** ** **</td>
-                                <td class="p-3.5">Saç Kesimi</td>
-                                <td class="p-3.5 font-bold text-gold-700">Bugün, 15:30</td>
-                                <td class="p-3.5"><span class="px-2.5 py-1 bg-yellow-50 text-yellow-800 rounded-lg font-bold">Onaylandı</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- 3. PANEL: MÜŞTERİ RANDEVU EKRANI (Son Kullanıcının Linke Tıklayıp Randevu Aldığı Yer) -->
-    <section id="panelRandevu" class="py-12 lg:py-16 hidden">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <!-- Salon Üst Kartı -->
-            <div class="bg-gradient-to-br from-gray-900 to-gray-800 text-white p-6 sm:p-8 rounded-3xl border border-gold-500/40 shadow-2xl mb-8 text-center relative">
-                <div class="w-16 h-16 bg-gold-500/10 border border-gold-500/40 rounded-2xl mx-auto flex items-center justify-center text-gold-400 text-2xl mb-4">
-                    <i class="fa-solid fa-scissors"></i>
-                </div>
-                <h2 id="displaySalonAdi" class="text-2xl sm:text-3xl font-extrabold font-serif text-white mb-2">Karizma Kuaför</h2>
-                <p class="text-xs text-gold-400 font-semibold tracking-wider uppercase">Temassız Dijital Randevu Sistemi</p>
-                <div id="displayAdresTel" class="mt-4 pt-4 border-t border-gray-700/60 flex flex-wrap justify-center gap-4 text-xs text-gray-300">
-                    <span><i class="fa-solid fa-location-dot text-gold-500 mr-1"></i> Samandıra, Sancaktepe / İstanbul</span>
-                    <span><i class="fa-solid fa-phone text-gold-500 mr-1"></i> 0545 716 98 91</span>
-                </div>
-            </div>
-
-            <!-- Randevu Formu -->
-            <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-xl">
-                <h3 class="text-lg font-bold font-serif text-gray-900 mb-6 pb-3 border-b border-gray-100 flex items-center justify-between">
-                    <span>Hemen Randevu Oluştur</span>
-                    <i class="fa-solid fa-calendar-days text-gold-600"></i>
-                </h3>
-
-                <form onsubmit="completeAppointment(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Hizmet Seçimi</label>
-                        <select required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm bg-white font-medium">
-                            <option value="">Hizmet Seçiniz...</option>
-                            <option value="sac">Saç Kesimi & Şekillendirme (350 TL)</option>
-                            <option value="sakal">Sakal Tıraşı & Bakım (200 TL)</option>
-                            <option value="kombine">Saç + Sakal + Cilt Bakımı (600 TL)</option>
-                        </select>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Personel / Uzman</label>
-                            <select required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm bg-white font-medium">
-                                <option value="farketmez">Farketmez (İlk Müsait Uzman)</option>
-                                <option value="ahmet">Ahmet Usta</option>
-                                <option value="mehmet">Mehmet Usta</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Tarih</label>
-                            <input type="date" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm font-medium">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Müsait Saatler</label>
-                        <div class="grid grid-cols-4 gap-2">
-                            <button type="button" class="py-2.5 rounded-xl border border-gold-500 bg-gold-500/10 text-gold-800 text-xs font-bold hover:bg-gold-500 hover:text-white transition-all">10:00</button>
-                            <button type="button" class="py-2.5 rounded-xl border border-gray-200 text-gray-700 text-xs font-bold hover:border-gold-500 transition-all">11:30</button>
-                            <button type="button" class="py-2.5 rounded-xl border border-gray-200 text-gray-700 text-xs font-bold hover:border-gold-500 transition-all">14:00</button>
-                            <button type="button" class="py-2.5 rounded-xl border border-gray-200 text-gray-700 text-xs font-bold hover:border-gold-500 transition-all">16:30</button>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Adınız Soyadınız</label>
-                            <input type="text" required placeholder="Adınız Soyadınız" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm font-medium">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">Telefon Numaranız</label>
-                            <input type="tel" required placeholder="05XX XXX XX XX" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold-500 outline-none text-sm font-medium">
-                        </div>
-                    </div>
-
-                    <div class="pt-4">
-                        <button type="submit" class="w-full py-4 px-6 rounded-xl bg-gray-900 text-gold-400 font-bold hover:bg-black transition-all shadow-lg flex items-center justify-center space-x-2 border border-gold-500/50">
-                            <i class="fa-solid fa-check text-gold-500"></i>
-                            <span>Randevuyu Onayla (Ödeme Dükkanda Yapılacaktır)</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800 text-xs mt-12 text-center">
-        <p class="text-white font-bold font-serif mb-1">Temassız Girişim - Dijital Randevu Sistemleri</p>
-        <p>© 2026 Tüm hakları saklıdır. Ödemeler işletme kasasında tahsil edilir.</p>
-    </footer>
-
-    <!-- JavaScript - 3 Panelli Geçiş ve Veri Aktarımı -->
-    <script>
-        function switchPanel(panel) {
-            const p1 = document.getElementById('panelKurulum');
-            const p2 = document.getElementById('panelYonetim');
-            const p3 = document.getElementById('panelRandevu');
-            
-            const b1 = document.getElementById('btnKurulum');
-            const b2 = document.getElementById('btnYonetim');
-            const b3 = document.getElementById('btnRandevu');
-
-            p1.classList.add('hidden');
-            p2.classList.add('hidden');
-            p3.classList.add('hidden');
-
-            b1.className = "px-3.5 py-2 rounded-xl text-xs font-bold bg-gray-50 text-gray-700 border border-gray-200 hover:border-gold-500 transition-all whitespace-nowrap";
-            b2.className = "px-3.5 py-2 rounded-xl text-xs font-bold bg-gray-50 text-gray-700 border border-gray-200 hover:border-gold-500 transition-all whitespace-nowrap";
-            b3.className = "px-
+    <!-- =========================================================
+         PANEL 1: MÜŞTERİ RANDEVU PANELİ
+    ========================================================== -->
+    <section id="panelCustomer">
+      <!-- İşletme Bilgi Başlığı -->
+      <div class="salon-hero">
+        <div>
+          <div class="salon-tag">★ 7/24 Online Randevu Aktif</div>
+          <h1 id="heroBizName">Atelier Pine 
