@@ -2,839 +2,323 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Temassız Girişim — Dijital Randevu Sistemleri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temassız Girişim - Randevu</title>
   <style>
-    :root {
-      --pine: #113825;
-      --pine-dark: #0a2417;
-      --pine-light: #1b5237;
-      --gold: #d4af37;
-      --gold-soft: #f5e6b3;
-      --bg: #f6f7f5;
-      --card: #ffffff;
-      --text: #18221c;
-      --muted: #5c6b62;
-      --border: #dfe5e0;
-      --danger: #c93b3b;
-      --success: #1b7a46;
-      --warning: #c88719;
-      --radius: 14px;
-    }
-
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      font-size: 15px;
-      line-height: 1.45;
-      overflow-x: hidden;
-    }
-
-    /* Üst Header & Panel Geçişi */
-    .topbar {
-      background: var(--pine);
-      color: #fff;
-      padding: 14px 14px 16px;
-      border-bottom: 3px solid var(--gold);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
-    }
-
-    .topbar-inner {
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    .brand-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .brand-badge {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: var(--gold);
-      color: var(--pine-dark);
-      font-weight: 800;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .brand-text h1 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-    }
-
-    .brand-text p {
-      margin: 1px 0 0;
-      font-size: 12px;
-      color: #cfe0d6;
-    }
-
-    .panel-switcher {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      background: rgba(0, 0, 0, 0.24);
-      padding: 5px;
-      border-radius: 12px;
-      width: 100%;
-    }
-
-    .switch-btn {
-      width: 100%;
-      min-width: 0;
-      border: none;
-      border-radius: 9px;
-      padding: 10px 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      background: transparent;
-      color: #e6efe9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      white-space: nowrap;
-      transition: all 0.18s ease;
-    }
-
-    .switch-btn.active {
-      background: var(--gold);
-      color: var(--pine-dark);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
-    }
-
-    /* Ana Konteyner */
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 14px 14px 90px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* İşletme Hero Kartı */
-    .salon-hero {
-      background: linear-gradient(135deg, var(--pine) 0%, var(--pine-light) 100%);
-      color: #fff;
-      border-radius: 16px;
-      padding: 18px 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 6px 18px rgba(17, 56, 37, 0.18);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-
-    .live-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--gold);
-      color: var(--gold-soft);
-      font-size: 11px;
-      font-weight: 600;
-      background: rgba(0, 0, 0, 0.18);
-    }
-
-    .query-pill-btn {
-      background: rgba(255, 255, 255, 0.14);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 999px;
-      padding: 5px 11px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .salon-hero h2 {
-      margin: 4px 0 4px;
-      font-size: 22px;
-      font-family: Georgia, serif;
-      letter-spacing: 0.3px;
-    }
-
-    .salon-hero .sub {
-      margin: 0;
-      font-size: 12.5px;
-      color: #d6e6dd;
-    }
-
-    /* Bölüm Kartları */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 15px;
-      margin-bottom: 14px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-    }
-
-    .step-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--pine);
-      margin: 0 0 12px;
-    }
-
-    .step-num {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--pine);
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 800;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    /* Hizmet Listesi */
-    .service-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 9px;
-    }
-
-    .service-item {
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 13px;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      cursor: pointer;
-      text-align: left;
-      width: 100%;
-      transition: all 0.15s ease;
-    }
-
-    .service-item.selected {
-      border-color: var(--pine);
-      background: #f0f6f2;
-      box-shadow: 0 0 0 2px rgba(17, 56, 37, 0.12);
-    }
-
-    .service-info strong {
-      display: block;
-      font-size: 14.5px;
-      color: var(--text);
-    }
-
-    .service-info span {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .service-price {
-      font-weight: 800;
-      font-size: 14.5px;
-      color: var(--pine);
-      background: var(--gold-soft);
-      padding: 5px 10px;
-      border-radius: 8px;
-      white-space: nowrap;
-    }
-
-    /* Uzman Seçimi */
-    .staff-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 9px;
-    }
-
-    .staff-item {
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 11px 10px;
-      background: #fff;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.15s ease;
-    }
-
-    .staff-item.selected {
-      border-color: var(--pine);
-      background: #f0f6f2;
-      box-shadow: 0 0 0 2px rgba(17, 56, 37, 0.12);
-    }
-
-    .staff-avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: var(--pine);
-      color: var(--gold);
-      font-weight: 700;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 6px;
-    }
-
-    .staff-item strong {
-      display: block;
-      font-size: 13.5px;
-      color: var(--text);
-    }
-
-    .staff-item span {
-      font-size: 11.5px;
-      color: var(--muted);
-    }
-
-    /* Tarih Şeridi */
-    .date-strip {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      scrollbar-width: thin;
-    }
-
-    .date-btn {
-      min-width: 68px;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 9px 6px;
-      background: #fff;
-      text-align: center;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .date-btn.selected {
-      background: var(--pine);
-      border-color: var(--pine);
-      color: #fff;
-    }
-
-    .date-btn .d-day {
-      display: block;
-      font-size: 11px;
-      opacity: 0.8;
-    }
-
-    .date-btn .d-num {
-      display: block;
-      font-size: 16px;
-      font-weight: 800;
-      margin: 2px 0;
-    }
-
-    .date-btn .d-mon {
-      display: block;
-      font-size: 11px;
-    }
-
-    /* Saat Slotları */
-    .slot-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .slot-btn {
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 4px;
-      background: #fff;
-      font-size: 13.5px;
-      font-weight: 700;
-      color: var(--text);
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .slot-btn.selected {
-      background: var(--gold);
-      border-color: var(--pine);
-      color: var(--pine-dark);
-    }
-
-    .slot-btn.booked {
-      background: #f0f0f0;
-      border-color: #e2e2e2;
-      color: #a3a3a3;
-      text-decoration: line-through;
-      cursor: not-allowed;
-    }
-
-    /* Form Elemanları */
-    .form-group {
-      margin-bottom: 11px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 12.5px;
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: var(--text);
-    }
-
-    .input, .select {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-size: 14px;
-      background: #fff;
-      color: var(--text);
-      outline: none;
-    }
-
-    .input:focus, .select:focus {
-      border-color: var(--pine);
-    }
-
-    /* Özet Kutusu & Ana Butonlar */
-    .summary-box {
-      background: #f2f7f4;
-      border: 1px dashed var(--pine);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
-      font-size: 13px;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    .summary-row:last-child {
-      margin-bottom: 0;
-      padding-top: 6px;
-      border-top: 1px solid #d5e2da;
-      font-weight: 800;
-      font-size: 14.5px;
-      color: var(--pine);
-    }
-
-    .btn {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 13px 16px;
-      font-size: 14.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      transition: opacity 0.15s ease;
-    }
-
-    .btn:active {
-      opacity: 0.88;
-    }
-
-    .btn-primary {
-      background: var(--pine);
-      color: #fff;
-    }
-
-    .btn-gold {
-      background: var(--gold);
-      color: var(--pine-dark);
-    }
-
-    .btn-whatsapp {
-      background: #1fa855;
-      color: #fff;
-    }
-
-    .btn-outline {
-      background: #fff;
-      color: var(--pine);
-      border: 1.5px solid var(--pine);
-    }
-
-    .btn-sm {
-      padding: 7px 10px;
-      font-size: 12px;
-      border-radius: 8px;
-      width: auto;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: #fff;
-    }
-
-    .btn-success {
-      background: var(--success);
-      color: #fff;
-    }
-
-    /* İşletmeci Paneli Stilleri */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .stat-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 11px 8px;
-      text-align: center;
-    }
-
-    .stat-card span {
-      display: block;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .stat-card strong {
-      display: block;
-      font-size: 17px;
-      color: var(--pine);
-      margin-top: 2px;
-    }
-
-    .admin-tabs {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-
-    .admin-tab-btn {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
-      border-radius: 10px;
-      padding: 9px 4px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .admin-tab-btn.active {
-      background: var(--pine);
-      color: #fff;
-      border-color: var(--pine);
-    }
-
-    .filter-row {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
-    }
-
-    .filter-chip {
-      border: 1px solid var(--border);
-      background: #fff;
-      border-radius: 999px;
-      padding: 5px 11px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .filter-chip.active {
-      background: var(--pine);
-      color: #fff;
-      border-color: var(--pine);
-    }
-
-    .appt-card {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 10px;
-      background: #fff;
-    }
-
-    .appt-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-
-    .badge {
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .badge-pending { background: #fff3d6; color: #9a6200; }
-    .badge-confirmed { background: #dcfce7; color: #166534; }
-    .badge-completed { background: #e0f2fe; color: #075985; }
-    .badge-cancelled { background: #fee2e2; color: #991b1b; }
-
-    .appt-meta {
-      font-size: 12.5px;
-      color: var(--muted);
-      margin-bottom: 9px;
-    }
-
-    .appt-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .list-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .list-row:last-child {
-      border-bottom: none;
-    }
-
-    /* Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 100;
-    }
-
-    .modal-box {
-      background: #fff;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 440px;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 18px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-    }
-
-    .modal-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .modal-head h3 {
-      margin: 0;
-      font-size: 17px;
-      color: var(--pine);
-    }
-
-    .close-btn {
-      border: none;
-      background: #f0f2f0;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* Toast Bildirim */
-    .toast {
-      position: fixed;
-      bottom: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--pine-dark);
-      color: #fff;
-      padding: 11px 18px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-      z-index: 200;
-      border: 1px solid var(--gold);
-      max-width: 92vw;
-      text-align: center;
-    }
-
-    .footer-note {
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 20px;
-    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f4; color: #16201a; }
+    .top { background: #113825; color: #fff; padding: 14px; border-bottom: 3px solid #d4af37; }
+    .top h1 { margin: 0 0 10px; font-size: 16px; }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .tabs button { padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; background: #1e5238; color: #fff; }
+    .tabs button.active { background: #d4af37; color: #113825; }
+    .wrap { max-width: 680px; margin: 14px auto; padding: 0 12px 60px; }
+    .box { background: #fff; border: 1px solid #dce3de; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+    .hero { background: #113825; color: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+    .hero h2 { margin: 6px 0 4px; }
+    .btn-opt { display: block; width: 100%; text-align: left; padding: 10px 12px; margin-bottom: 8px; border: 1.5px solid #cbd5ce; border-radius: 10px; background: #fff; cursor: pointer; font-size: 14px; }
+    .btn-opt.sel { border-color: #113825; background: #e8f3ec; font-weight: bold; }
+    .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .slot { padding: 10px; border: 1.5px solid #cbd5ce; border-radius: 8px; background: #fff; font-weight: bold; cursor: pointer; }
+    .slot.sel { background: #d4af37; border-color: #113825; }
+    .slot.busy { background: #eee; color: #999; text-decoration: line-through; cursor: not-allowed; }
+    input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #c5d0c8; border-radius: 8px; font-size: 14px; }
+    .main-btn { width: 100%; padding: 12px; border: none; border-radius: 10px; background: #113825; color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; }
+    .gold-btn { width: 100%; padding: 11px; border: none; border-radius: 10px; background: #d4af37; color: #113825; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+    .appt { border: 1px solid #dce3de; border-radius: 10px; padding: 10px; margin-bottom: 8px; background: #fafcfb; }
+    .small-btn { padding: 6px 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; margin-right: 6px; margin-top: 6px; }
+    .ok { background: #1b7a46; color: #fff; }
+    .del { background: #c93b3b; color: #fff; }
+    .hide { display: none; }
   </style>
 </head>
 <body>
 
-  <!-- ÜST PANEL VE GEÇİŞ BUTONLARI -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand-row">
-        <div class="brand-badge">TG</div>
-        <div class="brand-text">
-          <h1>Temassız Girişim</h1>
-          <p>Dijital Randevu &amp; İşletme Sistemleri</p>
-        </div>
+  <div class="top">
+    <h1>Temassız Girişim — Dijital Randevu</h1>
+    <div class="tabs">
+      <button type="button" id="tabCust" class="active" onclick="showPanel('cust')">Müşteri Paneli</button>
+      <button type="button" id="tabAdm" onclick="showPanel('adm')">İşletmeci Paneli</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- MÜŞTERİ PANELİ -->
+    <div id="panelCust">
+      <div class="hero">
+        <span>★ 7/24 Online Randevu</span>
+        <h2 id="bizTitle">Atelier Pine</h2>
+        <small>Hızlı randevu oluşturun</small>
       </div>
 
-      <div class="panel-switcher">
-        <button type="button" class="switch-btn active" id="nav-customer" data-action="switch-panel" data-panel="customer">
-          📅 Müşteri Paneli
-        </button>
-        <button type="button" class="switch-btn" id="nav-admin" data-action="switch-panel" data-panel="admin">
-          ⚙️ İşletmeci Paneli
-        </button>
+      <div class="box">
+        <h3>1. Hizmet Seç</h3>
+        <div id="srvList"></div>
+      </div>
+
+      <div class="box">
+        <h3>2. Uzman Seç</h3>
+        <div id="stfList"></div>
+      </div>
+
+      <div class="box">
+        <h3>3. Saat Seç</h3>
+        <div class="slots" id="slotList"></div>
+      </div>
+
+      <div class="box">
+        <h3>4. Bilgileriniz</h3>
+        <input type="text" id="cName" placeholder="Ad Soyad" />
+        <input type="tel" id="cPhone" placeholder="Telefon (05xx...)" />
+        <button type="button" class="main-btn" onclick="createAppt()">Randevuyu Kaydet</button>
+        <div id="custMsg" style="margin-top:10px; font-weight:bold; color:#113825;"></div>
       </div>
     </div>
-  </header>
 
-  <main class="container">
-
-    <!-- ==================== 1. MÜŞTERİ RANDEVU PANELİ ==================== -->
-    <section id="panel-customer">
-      <div class="salon-hero">
-        <div class="hero-top">
-          <span class="live-pill">★ 7/24 Online Randevu Aktif</span>
-          <button type="button" class="query-pill-btn" data-action="open-query-modal">🔍 Randevularım</button>
-        </div>
-        <h2 id="hero-business-name">Atelier Pine</h2>
-        <p class="sub" id="hero-business-sub">Profesyonel Bakım &amp; Randevu Merkezi • Anında Onay</p>
+    <!-- İŞLETMECİ PANELİ -->
+    <div id="panelAdm" class="hide">
+      <div class="box" id="admLogin">
+        <h3>İşletmeci Girişi</h3>
+        <input type="password" id="admPin" placeholder="PIN (1234)" />
+        <button type="button" class="main-btn" onclick="loginAdm()">Giriş Yap</button>
+        <button type="button" class="gold-btn" onclick="demoAdm()">Hızlı Giriş</button>
       </div>
 
-      <!-- Adım 1: Hizmet Seçimi -->
-      <div class="card">
-        <h3 class="step-title"><span class="step-num">1</span> Hizmet Seçin</h3>
-        <div class="service-grid" id="customer-service-list"></div>
-      </div>
-
-      <!-- Adım 2: Uzman Seçimi -->
-      <div class="card">
-        <h3 class="step-title"><span class="step-num">2</span> Uzman Seçin</h3>
-        <div class="staff-grid" id="customer-staff-list"></div>
-      </div>
-
-      <!-- Adım 3: Tarih ve Saat Seçimi -->
-      <div class="card">
-        <h3 class="step-title"><span class="step-num">3</span> Tarih ve Saat Seçin</h3>
-        <div class="date-strip" id="customer-date-list"></div>
-        <div class="slot-grid" id="customer-slot-list"></div>
-      </div>
-
-      <!-- Adım 4: Müşteri Bilgileri & Onay -->
-      <div class="card">
-        <h3 class="step-title"><span class="step-num">4</span> Bilgileriniz &amp; Onay</h3>
-
-        <div class="form-group">
-          <label for="cust-name">Adınız Soyadınız *</label>
-          <input type="text" id="cust-name" class="input" placeholder="Örn: Zeynep Yılmaz" />
+      <div id="admArea" class="hide">
+        <div class="box">
+          <h3>Gelen Randevular</h3>
+          <div id="admAppts"></div>
         </div>
 
-        <div class="form-group">
-          <label for="cust-phone">Telefon Numaranız (WhatsApp) *</label>
-          <input type="tel" id="cust-phone" class="input" placeholder="Örn: 0555 123 45 67" />
+        <div class="box">
+          <h3>Yeni Hizmet Ekle</h3>
+          <input type="text" id="newSrvName" placeholder="Hizmet Adı" />
+          <input type="number" id="newSrvPrice" placeholder="Fiyat (TL)" />
+          <button type="button" class="main-btn" onclick="addSrv()">Hizmet Ekle</button>
         </div>
 
-        <div class="form-group">
-          <label for="cust-note">Notunuz (İsteğe Bağlı)</label>
-          <input type="text" id="cust-note" class="input" placeholder="Özel talebiniz varsa yazabilirsiniz..." />
-        </div>
-
-        <div class="summary-box" id="booking-summary"></div>
-
-        <button type="button" class="btn btn-primary" data-action="create-booking">
-          ✓ Randevuyu Onayla ve Oluştur
-        </button>
-      </div>
-    </section>
-
-    <!-- ==================== 2. İŞLETMECİ YÖNETİM PANELİ ==================== -->
-    <section id="panel-admin" class="hidden">
-
-      <!-- İşletmeci Giriş Ekranı -->
-      <div class="card" id="admin-login-box">
-        <h3 class="step-title"><span class="step-num">🔒</span> İşletmeci Paneli Girişi</h3>
-        <p style="font-size:13px; color:var(--muted); margin-top:0;">
-          Randevuları yönetmek, fiyat/uzman güncellemek için giriş yapın. (Varsayılan PIN: <strong>1234</strong>)
-        </p>
-        <div class="form-group">
-          <label for="admin-pin-input">Yönetici PIN Kodu</label>
-          <input type="password" id="admin-pin-input" class="input" inputmode="numeric" maxlength="6" placeholder="1234" />
-        </div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-          <button type="button" class="btn btn-primary" data-action="admin-login">Giriş Yap</button>
-          <button type="button" class="btn btn-gold" data-action="admin-demo-login">⚡ Hızlı Giriş</button>
+        <div class="box">
+          <h3>İşletme Adı</h3>
+          <input type="text" id="newBizName" placeholder="İşletme Adı" />
+          <button type="button" class="gold-btn" onclick="saveBiz()">Kaydet</button>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- İşletmeci Ana Dashboard -->
-      <div id="admin-dashboard" class="hidden">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <strong style="color:var(--pine); font-size:16px;">Yönetim Paneli</strong>
-          <button type="button" class="btn btn-outline btn-sm" data-action="admin-logout">Çıkış Yap</button>
-        </div>
+  <script>
+    var KEY = "tg_simple_randevu_v1";
+    var SLOTS = ["09:30", "11:00", "13:00", "14:30", "16:00", "17:30"];
 
-        <!-- Özet İstatistikler -->
-        <div class="stats-grid" id="admin-stats"></div>
+    var state = {
+      bizName: "Atelier Pine",
+      pin: "1234",
+      services: [
+        { id: "1", name: "Cilt Bakımı", price: 950 },
+        { id: "2", name: "Protez Tırnak", price: 750 },
+        { id: "3", name: "İpek Kirpik", price: 650 }
+      ],
+      staff: [
+        { id: "a", name: "Selin Kaya" },
+        { id: "b", name: "Elif Demir" }
+      ],
+      appts: [
+        { id: "101", name: "Merve Aydın", phone: "05320001122", srvId: "1", stfId: "a", time: "11:00", status: "Onaylandı" }
+      ],
+      selSrv: "1",
+      selStf: "a",
+      selTime: null
+    };
 
-        <!-- Alt Sekmeler -->
-        <div class="admin-tabs">
-          <button type="button" class="admin-tab-btn active" data-action="switch-admin-tab" data-tab="appointments">Randevular</button>
-          <button type="button" class="admin-tab-btn" data-action="switch-admin-tab" data-tab="catalog">Hizmet/Uzman</button>
-          <button type="button" class="admin-tab-btn" data-action="switch-admin-tab" data-tab="manual">+ Manuel</button>
-          <button type="but
+    try {
+      var saved = localStorage.getItem(KEY);
+      if (saved) {
+        var p = JSON.parse(saved);
+        if (p && p.services && p.staff && p.appts) {
+          state.bizName = p.bizName || state.bizName;
+          state.pin = p.pin || state.pin;
+          state.services = p.services;
+          state.staff = p.staff;
+          state.appts = p.appts;
+          state.selSrv = state.services[0] ? state.services[0].id : null;
+          state.selStf = state.staff[0] ? state.staff[0].id : null;
+        }
+      }
+    } catch (e) {}
+
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    function showPanel(which) {
+      var isCust = which === "cust";
+      document.getElementById("panelCust").className = isCust ? "" : "hide";
+      document.getElementById("panelAdm").className = isCust ? "hide" : "";
+      document.getElementById("tabCust").className = isCust ? "active" : "";
+      document.getElementById("tabAdm").className = isCust ? "" : "active";
+      render();
+    }
+
+    function pickSrv(id) { state.selSrv = id; render(); }
+    function pickStf(id) { state.selStf = id; render(); }
+    function pickTime(t) { state.selTime = t; render(); }
+
+    function createAppt() {
+      var name = document.getElementById("cName").value.trim();
+      var phone = document.getElementById("cPhone").value.trim();
+      var msg = document.getElementById("custMsg");
+
+      if (!state.selTime) { msg.textContent = "Lütfen bir saat seçin."; return; }
+      if (!name || !phone) { msg.textContent = "Lütfen ad soyad ve telefon girin."; return; }
+
+      state.appts.push({
+        id: String(Date.now()).slice(-4),
+        name: name,
+        phone: phone,
+        srvId: state.selSrv,
+        stfId: state.selStf,
+        time: state.selTime,
+        status: "Bekliyor"
+      });
+      save();
+      msg.textContent = "Randevunuz kaydedildi! Saat: " + state.selTime;
+      state.selTime = null;
+      document.getElementById("cName").value = "";
+      document.getElementById("cPhone").value = "";
+      render();
+    }
+
+    function loginAdm() {
+      var pin = document.getElementById("admPin").value.trim();
+      if (pin === state.pin) {
+        demoAdm();
+      } else {
+        alert("PIN yanlış (1234)");
+      }
+    }
+
+    function demoAdm() {
+      document.getElementById("admLogin").className = "hide";
+      document.getElementById("admArea").className = "";
+      renderAdm();
+    }
+
+    function setApptStatus(id, st) {
+      for (var i = 0; i < state.appts.length; i++) {
+        if (state.appts[i].id === id) state.appts[i].status = st;
+      }
+      save();
+      renderAdm();
+      render();
+    }
+
+    function delAppt(id) {
+      state.appts = state.appts.filter(function (a) { return a.id !== id; });
+      save();
+      renderAdm();
+      render();
+    }
+
+    function addSrv() {
+      var n = document.getElementById("newSrvName").value.trim();
+      var pr = parseInt(document.getElementById("newSrvPrice").value, 10) || 0;
+      if (!n) return;
+      state.services.push({ id: String(Date.now()), name: n, price: pr });
+      save();
+      document.getElementById("newSrvName").value = "";
+      document.getElementById("newSrvPrice").value = "";
+      render();
+    }
+
+    function saveBiz() {
+      var b = document.getElementById("newBizName").value.trim();
+      if (!b) return;
+      state.bizName = b;
+      save();
+      render();
+      alert("Kaydedildi");
+    }
+
+    function getSrvName(id) {
+      for (var i = 0; i < state.services.length; i++) {
+        if (state.services[i].id === id) return state.services[i].name + " (" + state.services[i].price + " TL)";
+      }
+      return "Hizmet";
+    }
+
+    function getStfName(id) {
+      for (var i = 0; i < state.staff.length; i++) {
+        if (state.staff[i].id === id) return state.staff[i].name;
+      }
+      return "Uzman";
+    }
+
+    function render() {
+      document.getElementById("bizTitle").textContent = state.bizName;
+      document.getElementById("newBizName").value = state.bizName;
+
+      var sHtml = "";
+      for (var i = 0; i < state.services.length; i++) {
+        var s = state.services[i];
+        var cls = s.id === state.selSrv ? "btn-opt sel" : "btn-opt";
+        sHtml += '<button type="button" class="' + cls + '" onclick="pickSrv(\'' + s.id + '\')">' + s.name + " — " + s.price + " TL</button>";
+      }
+      document.getElementById("srvList").innerHTML = sHtml;
+
+      var fHtml = "";
+      for (var j = 0; j < state.staff.length; j++) {
+        var f = state.staff[j];
+        var fCls = f.id === state.selStf ? "btn-opt sel" : "btn-opt";
+        fHtml += '<button type="button" class="' + fCls + '" onclick="pickStf(\'' + f.id + '\')">' + f.name + "</button>";
+      }
+      document.getElementById("stfList").innerHTML = fHtml;
+
+      var busyTimes = [];
+      for (var k = 0; k < state.appts.length; k++) {
+        if (state.appts[k].stfId === state.selStf && state.appts[k].status !== "İptal") {
+          busyTimes.push(state.appts[k].time);
+        }
+      }
+
+      var tHtml = "";
+      for (var m = 0; m < SLOTS.length; m++) {
+        var tm = SLOTS[m];
+        var isBusy = busyTimes.indexOf(tm) !== -1;
+        if (isBusy) {
+          tHtml += '<button type="button" class="slot busy" disabled>' + tm + "</button>";
+        } else {
+          var tCls = state.selTime === tm ? "slot sel" : "slot";
+          tHtml += '<button type="button" class="' + tCls + '" onclick="pickTime(\'' + tm + '\')">' + tm + "</button>";
+        }
+      }
+      document.getElementById("slotList").innerHTML = tHtml;
+      renderAdm();
+    }
+
+    function renderAdm() {
+      var box = document.getElementById("admAppts");
+      if (!box) return;
+      if (state.appts.length === 0) {
+        box.innerHTML = "<p>Randevu yok.</p>";
+        return;
+      }
+      var h = "";
+      for (var i = 0; i < state.appts.length; i++) {
+        var a = state.appts[i];
+        h += '<div class="appt">' +
+          "<strong>" + a.name + "</strong> (" + a.phone + ")<br/>" +
+          getSrvName(a.srvId) + " • " + getStfName(a.stfId) + " • <strong>" + a.time + "</strong><br/>" +
+          "Durum: <strong>" + a.status + "</strong><br/>" +
+          '<button type="button" class="small-btn ok" onclick="setApptStatus(\'' + a.id + '\', \'Onaylandı\')">Onayla</button>' +
+          '<button type="button" class="small-btn del" onclick="setApptStatus(\'' + a.id + '\', \'İptal\')">İptal</button>' +
+          '<button type="button" class="small-btn del" onclick="delAppt(\'' + a.id + '\')">Sil</button>' +
+          "</div>";
+      }
+      box.innerHTML = h;
+    }
+
+    render();
+  </script>
+</body>
+</html>
+
