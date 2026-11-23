@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Randevu Sistemi</title>
+  <title>Kuaför Randevu Sistemi</title>
   <style>
-    /* Genel kutu modeli ve temel sayfa stilleri */
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: #f4f6f4;
       color: #16201a;
       overflow-x: hidden;
     }
-
-    /* Üst sabit başlık ve sekme çubuğu */
     .top {
       background: #113825;
       color: #fff;
@@ -24,7 +21,6 @@
       position: sticky;
       top: 0;
       z-index: 40;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
     }
     .top-head {
       max-width: 700px;
@@ -47,8 +43,6 @@
       font-size: 12px;
       color: #d6e6dd;
     }
-
-    /* Müşteri / İşletmeci geçiş sekmeleri */
     .tabs {
       max-width: 700px;
       margin: 0 auto;
@@ -59,23 +53,20 @@
     .tabs button {
       width: 100%;
       min-width: 0;
-      padding: 11px 8px;
+      padding: 10px 8px;
       border: none;
-      border-radius: 10px;
+      border-radius: 9px;
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
       background: #1c5036;
       color: #fff;
       white-space: nowrap;
-      transition: background 0.15s ease, color 0.15s ease;
     }
     .tabs button.active {
       background: #d4af37;
       color: #113825;
     }
-
-    /* Ana içerik konteyneri ve kartlar */
     .container {
       max-width: 700px;
       margin: 16px auto 40px;
@@ -84,19 +75,16 @@
     .card {
       background: #fff;
       border: 1px solid #dce5df;
-      border-radius: 14px;
-      padding: 16px;
+      border-radius: 12px;
+      padding: 14px;
       margin-bottom: 14px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
     .card h2 {
       margin: 0 0 10px;
       font-size: 15px;
-      font-weight: 800;
       color: #113825;
     }
-
-    /* İşletme bilgi özeti */
     .shop-meta {
       font-size: 13px;
       color: #36473d;
@@ -105,19 +93,14 @@
     .shop-meta div {
       margin-top: 4px;
     }
-
-    /* Boş durum bilgilendirme kutusu */
-    .empty-box {
-      padding: 12px;
-      border-radius: 10px;
-      background: #f8faf8;
-      border: 1px dashed #c4d1c9;
-      color: #4f6157;
+    .empty-note {
       font-size: 13px;
-      text-align: center;
+      color: #5b6d63;
+      background: #f5f8f6;
+      border: 1px dashed #c7d4cc;
+      border-radius: 9px;
+      padding: 12px;
     }
-
-    /* Hizmet ve personel seçim butonları */
     .option-list {
       display: grid;
       gap: 8px;
@@ -136,7 +119,6 @@
       font-weight: 600;
       cursor: pointer;
       text-align: left;
-      transition: all 0.15s ease;
     }
     .option-btn.selected {
       border-color: #113825;
@@ -145,8 +127,8 @@
     .price-tag {
       background: #f5e6b3;
       color: #113825;
-      padding: 4px 9px;
-      border-radius: 8px;
+      padding: 4px 8px;
+      border-radius: 7px;
       font-size: 12px;
       font-weight: 800;
       white-space: nowrap;
@@ -156,13 +138,6 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-    @media (max-width: 420px) {
-      .staff-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* 09:00 - 22:00 saat seçim ızgarası */
     .slots-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -174,16 +149,15 @@
       }
     }
     .slot-btn {
-      padding: 11px 6px;
+      padding: 10px 6px;
       border: 1.5px solid #cfd9d2;
-      border-radius: 10px;
+      border-radius: 9px;
       background: #fff;
       color: #16201a;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
-      transition: all 0.15s ease;
     }
     .slot-btn.selected {
       background: #113825;
@@ -197,8 +171,6 @@
       cursor: not-allowed;
       text-decoration: line-through;
     }
-
-    /* Form elemanları */
     .field {
       margin-bottom: 10px;
     }
@@ -212,26 +184,19 @@
     .field input,
     .field textarea {
       width: 100%;
-      padding: 11px 12px;
+      padding: 10px 12px;
       border: 1.5px solid #c6d1ca;
-      border-radius: 10px;
+      border-radius: 9px;
       font-size: 14px;
       font-family: inherit;
-      outline: none;
-    }
-    .field input:focus,
-    .field textarea:focus {
-      border-color: #113825;
     }
     .field textarea {
       resize: vertical;
-      min-height: 70px;
+      min-height: 68px;
     }
-
-    /* Ana aksiyon butonları */
     .btn-primary {
       width: 100%;
-      padding: 13px;
+      padding: 12px;
       border: none;
       border-radius: 10px;
       background: #113825;
@@ -242,7 +207,7 @@
     }
     .btn-gold {
       width: 100%;
-      padding: 13px;
+      padding: 12px;
       border: none;
       border-radius: 10px;
       background: #d4af37;
@@ -251,12 +216,10 @@
       font-weight: 800;
       cursor: pointer;
     }
-
-    /* Bildirim kutusu */
     .status-msg {
       margin-top: 10px;
       padding: 10px 12px;
-      border-radius: 10px;
+      border-radius: 9px;
       font-size: 13px;
       font-weight: 600;
       display: none;
@@ -273,37 +236,27 @@
       color: #842029;
       border: 1px solid #f5c2c7;
     }
-
-    /* İşletmeci yönetim listeleri (Hizmet & Personel) */
     .manage-list {
       margin-top: 12px;
       display: grid;
-      gap: 8px;
+      gap: 6px;
     }
-    .manage-item {
+    .manage-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border: 1px solid #dce5df;
-      border-radius: 10px;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid #e1e8e4;
+      border-radius: 8px;
       background: #fafcfb;
       font-size: 13px;
       font-weight: 600;
     }
-    .manage-item-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    /* İşletmeci panelindeki randevu listesi */
     .appt-item {
       border: 1px solid #e1e8e4;
       border-radius: 10px;
-      padding: 11px;
+      padding: 10px;
       margin-bottom: 8px;
       background: #fafcfb;
     }
@@ -318,35 +271,27 @@
       font-size: 12px;
       color: #46574d;
       margin-top: 4px;
-      line-height: 1.45;
+      line-height: 1.4;
     }
     .appt-actions {
       display: flex;
-      flex-wrap: wrap;
       gap: 6px;
       margin-top: 8px;
     }
-    .appt-actions button {
-      padding: 7px 11px;
+    .appt-actions button,
+    .btn-mini-del {
+      padding: 6px 10px;
       border: none;
-      border-radius: 8px;
+      border-radius: 7px;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
     }
     .btn-approve { background: #1e7e46; color: #fff; }
     .btn-cancel  { background: #e0a800; color: #16201a; }
-    .btn-delete  {
-      background: #c92a2a;
-      color: #fff;
-      border: none;
-      padding: 7px 11px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-logout  {
+    .btn-delete,
+    .btn-mini-del { background: #c92a2a; color: #fff; }
+    .btn-logout {
       background: #eef2ef;
       color: #16201a;
       border: 1px solid #cbd5ce;
@@ -368,12 +313,11 @@
   </style>
 </head>
 <body>
-  <!-- Üst Bilgi ve Sekme Seçimi -->
   <header class="top">
     <div class="top-head">
-      <div class="top-brand" id="brandBadge">RANDEVU SİSTEMİ</div>
-      <h1 id="headerShopName">İşletme Randevu</h1>
-      <p id="headerShopSub">09:00 – 22:00 Saatleri Arası Randevu</p>
+      <div class="top-brand">KUAFÖR RANDEVU SİSTEMİ</div>
+      <h1 id="headerShopName">Kuaför Randevu</h1>
+      <p>09:00 – 22:00 Saatleri Arası Randevu</p>
     </div>
     <nav class="tabs">
       <button type="button" id="tabCustomer" class="active" onclick="switchTab('customer')">Müşteri Paneli</button>
@@ -384,7 +328,6 @@
   <main class="container">
     <!-- MÜŞTERİ PANELİ -->
     <section id="customerView">
-      <!-- Dükkan ve İletişim Özeti -->
       <div class="card">
         <h2 id="infoCardTitle">İşletme Bilgileri</h2>
         <div class="shop-meta">
@@ -394,25 +337,21 @@
         </div>
       </div>
 
-      <!-- Adım 1: Hizmet Seçimi -->
       <div class="card">
         <h2>1. Hizmet Seçin</h2>
         <div class="option-list" id="serviceList"></div>
       </div>
 
-      <!-- Adım 2: Uzman / Personel Seçimi -->
       <div class="card">
         <h2>2. Uzman / Personel Seçin</h2>
         <div class="staff-grid" id="staffList"></div>
       </div>
 
-      <!-- Adım 3: Saat Seçimi (09:00 - 22:00) -->
       <div class="card">
         <h2>3. Saat Seçin (09:00 – 22:00)</h2>
         <div class="slots-grid" id="slotList"></div>
       </div>
 
-      <!-- Adım 4: Müşteri Bilgileri ve Onay -->
       <div class="card">
         <h2>4. Bilgileriniz</h2>
         <div class="field">
@@ -430,24 +369,21 @@
 
     <!-- İŞLETMECİ PANELİ -->
     <section id="adminView" class="hidden">
-      <!-- Kullanıcı Adı & Şifre Giriş Ekranı -->
       <div class="card" id="adminLoginCard">
         <h2>İşletmeci Girişi</h2>
         <div class="field">
-          <label for="usernameInput">Kullanıcı Adı</label>
-          <input type="text" id="usernameInput" autocomplete="username" placeholder="Kullanıcı adınızı girin" />
+          <label for="userInput">Kullanıcı Adı</label>
+          <input type="text" id="userInput" placeholder="Kullanıcı adınızı girin" autocomplete="username" />
         </div>
         <div class="field">
-          <label for="passwordInput">Şifre</label>
-          <input type="password" id="passwordInput" autocomplete="current-password" placeholder="Şifrenizi girin" />
+          <label for="passInput">Şifre</label>
+          <input type="password" id="passInput" placeholder="Şifrenizi girin" autocomplete="current-password" />
         </div>
         <button type="button" class="btn-primary" onclick="loginAdmin()">Giriş Yap</button>
         <div id="loginStatus" class="status-msg"></div>
       </div>
 
-      <!-- İşletmeci Yönetim Alanı -->
       <div id="adminDashboard" class="hidden">
-        <!-- Dükkan Bilgileri Formu -->
         <div class="card">
           <div class="row-between">
             <h2>Dükkan Bilgileri</h2>
@@ -455,7 +391,7 @@
           </div>
           <div class="field">
             <label for="shopNameInput">Dükkan / Şube Adı</label>
-            <input type="text" id="shopNameInput" placeholder="Dükkan veya salon adını girin" />
+            <input type="text" id="shopNameInput" placeholder="Örn: Yıldız Kuaför Salonu" />
           </div>
           <div class="field">
             <label for="shopPhoneInput">İletişim Telefonu</label>
@@ -465,57 +401,53 @@
             <label for="shopAddressInput">Dükkan Adresi</label>
             <textarea id="shopAddressInput" placeholder="Mahalle, cadde, sokak, no, ilçe/il"></textarea>
           </div>
-          <button type="button" class="btn-gold" onclick="saveShopProfile()">Bilgileri Kaydet</button>
+          <button type="button" class="btn-gold" onclick="saveShopProfile()">Dükkan Bilgilerini Kaydet</button>
           <div id="profileStatus" class="status-msg"></div>
         </div>
 
-        <!-- Giriş Bilgilerini Değiştir -->
-        <div class="card">
-          <h2>Giriş Bilgilerini Değiştir</h2>
-          <div class="field">
-            <label for="newUsernameInput">Yeni Kullanıcı Adı</label>
-            <input type="text" id="newUsernameInput" placeholder="Yeni kullanıcı adını girin" />
-          </div>
-          <div class="field">
-            <label for="newPasswordInput">Yeni Şifre</label>
-            <input type="password" id="newPasswordInput" placeholder="Yeni şifrenizi girin" />
-          </div>
-          <button type="button" class="btn-primary" onclick="saveCredentials()">Giriş Bilgilerini Güncelle</button>
-          <div id="credStatus" class="status-msg"></div>
-        </div>
-
-        <!-- Hizmet Yönetimi -->
         <div class="card">
           <h2>Hizmetler ve Fiyatlar</h2>
           <div class="field">
             <label for="newServiceName">Hizmet Adı</label>
-            <input type="text" id="newServiceName" placeholder="Örn: Fön, Kesim, Boya, Cilt Bakımı..." />
+            <input type="text" id="newServiceName" placeholder="Örn: Fön, Kesim, Boya, Manikür..." />
           </div>
           <div class="field">
             <label for="newServicePrice">Ücret (TL)</label>
-            <input type="number" id="newServicePrice" placeholder="Örn: 400" min="0" />
+            <input type="number" id="newServicePrice" placeholder="Örn: 350" min="0" />
           </div>
           <button type="button" class="btn-primary" onclick="addService()">Hizmet Ekle</button>
           <div id="serviceStatus" class="status-msg"></div>
           <div class="manage-list" id="adminServiceList"></div>
         </div>
 
-        <!-- Personel / Uzman Yönetimi -->
         <div class="card">
-          <h2>Uzman / Personel Yönetimi</h2>
+          <h2>Personel / Uzman Listesi</h2>
           <div class="field">
-            <label for="newStaffName">Uzman / Personel Adı</label>
-            <input type="text" id="newStaffName" placeholder="Örn: Ayşe Hanım, Ahmet Bey..." />
+            <label for="newStaffName">Uzman Adı</label>
+            <input type="text" id="newStaffName" placeholder="Örn: Ayşe Hanım, Ahmet Usta..." />
           </div>
           <button type="button" class="btn-primary" onclick="addStaff()">Personel Ekle</button>
           <div id="staffStatus" class="status-msg"></div>
           <div class="manage-list" id="adminStaffList"></div>
         </div>
 
-        <!-- Gelen Randevular -->
         <div class="card">
           <h2>Gelen Randevular</h2>
           <div id="adminAppointments"></div>
+        </div>
+
+        <div class="card">
+          <h2>Giriş Bilgilerini Değiştir</h2>
+          <div class="field">
+            <label for="newUsernameInput">Yeni Kullanıcı Adı</label>
+            <input type="text" id="newUsernameInput" placeholder="Yeni kullanıcı adı" />
+          </div>
+          <div class="field">
+            <label for="newPasswordInput">Yeni Şifre</label>
+            <input type="password" id="newPasswordInput" placeholder="Yeni şifre" />
+          </div>
+          <button type="button" class="btn-gold" onclick="updateCredentials()">Giriş Bilgilerini Kaydet</button>
+          <div id="credStatus" class="status-msg"></div>
         </div>
       </div>
     </section>
@@ -524,91 +456,70 @@
   <script>
     const STORAGE_KEY = "kuafor_randevu_v4";
 
-    // Açılış 09:00, kapanış 22:00 (her saat başı)
     const HOURS = [
       "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
       "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
       "21:00", "22:00"
     ];
 
-    const FALLBACK_STAFF = "Salon Uzmanı";
-
-    // Varsayılan uygulama durumu (kullanıcı adı: isletmeci, şifre: 1234)
     const DEFAULT_DATA = {
       credentials: {
         username: "isletmeci",
-        password: "1234"
+        password: "1234",
+        isCustom: false
       },
       profile: {
-        shopName: "İşletme Randevu",
-        phone: "",
-        address: ""
+        shopName: "Kuaför Salonu",
+        phone: "Belirtilmedi",
+        address: "Belirtilmedi"
       },
       services: [],
       staff: [],
       appointments: []
     };
 
-    // Türkçe İ/ı karakterlerini normalize eden yardımcı fonksiyon
-    function normalizeUsername(str) {
-      return String(str || "")
+    function normalizeUser(val) {
+      return String(val || "")
         .trim()
-        .replace(/İ/g, "i")
-        .replace(/I/g, "ı")
         .toLowerCase()
-        .replace(/ş/g, "s")
-        .replace(/ı/g, "i");
+        .replaceAll("ş", "s")
+        .replaceAll("ı", "i")
+        .replaceAll("İ", "i");
     }
 
-    // LocalStorage üzerinden verileri güvenli yükle
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return JSON.parse(JSON.stringify(DEFAULT_DATA));
+        if (!raw) return structuredClone(DEFAULT_DATA);
         const parsed = JSON.parse(raw);
         return {
-          credentials: {
-            username: parsed.credentials && parsed.credentials.username ? parsed.credentials.username : DEFAULT_DATA.credentials.username,
-            password: parsed.credentials && parsed.credentials.password ? parsed.credentials.password : DEFAULT_DATA.credentials.password
-          },
-          profile: {
-            shopName: parsed.profile && parsed.profile.shopName !== undefined ? parsed.profile.shopName : DEFAULT_DATA.profile.shopName,
-            phone: parsed.profile && parsed.profile.phone !== undefined ? parsed.profile.phone : "",
-            address: parsed.profile && parsed.profile.address !== undefined ? parsed.profile.address : ""
-          },
+          credentials: { ...DEFAULT_DATA.credentials, ...(parsed.credentials || {}) },
+          profile: { ...DEFAULT_DATA.profile, ...(parsed.profile || {}) },
           services: Array.isArray(parsed.services) ? parsed.services : [],
           staff: Array.isArray(parsed.staff) ? parsed.staff : [],
           appointments: Array.isArray(parsed.appointments) ? parsed.appointments : []
         };
-      } catch (err) {
-        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      } catch {
+        return structuredClone(DEFAULT_DATA);
       }
     }
 
     let state = loadState();
     let isAdminLoggedIn = false;
-    let selectedServiceId = state.services[0] ? state.services[0].id : null;
-    let selectedStaff = state.staff[0] ? state.staff[0].name : FALLBACK_STAFF;
+    let selectedServiceId = state.services[0]?.id ?? null;
+    let selectedStaff = state.staff[0] ?? "Salon Uzmanı";
     let selectedSlot = null;
 
-    // Değişiklikleri LocalStorage'a kaydet
     function saveState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (err) {
-        console.error("Veri kaydedilemedi:", err);
-      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    // Durum mesajı göster
     function showStatus(elId, message, isError = false) {
       const el = document.getElementById(elId);
-      if (!el) return;
       el.textContent = message;
       el.className = "status-msg " + (isError ? "err" : "ok");
     }
 
-    // Müşteri / İşletmeci sekmeleri arası geçiş
     function switchTab(tab) {
       const isCustomer = tab === "customer";
       document.getElementById("tabCustomer").classList.toggle("active", isCustomer);
@@ -618,61 +529,140 @@
       renderAll();
     }
 
-    // İşletmeci kullanıcı adı ve şifre doğrulaması
     function loginAdmin() {
-      const usernameEl = document.getElementById("usernameInput");
-      const passwordEl = document.getElementById("passwordInput");
-      const enteredUser = usernameEl.value.trim();
-      const enteredPass = passwordEl.value.trim();
+      const enteredUser = normalizeUser(document.getElementById("userInput").value);
+      const enteredPass = document.getElementById("passInput").value.trim();
 
-      const savedUser = state.credentials.username.trim();
-      const isUserMatch =
-        enteredUser.toLowerCase() === savedUser.toLowerCase() ||
-        normalizeUsername(enteredUser) === normalizeUsername(savedUser);
+      const savedUser = normalizeUser(state.credentials.username);
+      const savedPass = state.credentials.password;
 
-      if (isUserMatch && enteredPass === state.credentials.password) {
+      const userMatches = state.credentials.isCustom
+        ? enteredUser === savedUser
+        : (enteredUser === savedUser || enteredUser === "admin");
+
+      if (userMatches && enteredPass === savedPass) {
         isAdminLoggedIn = true;
-        usernameEl.value = "";
-        passwordEl.value = "";
+        document.getElementById("userInput").value = "";
+        document.getElementById("passInput").value = "";
         document.getElementById("loginStatus").className = "status-msg";
         renderAdmin();
       } else {
-        showStatus("loginStatus", "Kullanıcı adı veya şifre hatalı. Lütfen tekrar deneyin.", true);
+        showStatus("loginStatus", "Kullanıcı adı veya şifre hatalı.", true);
       }
     }
 
-    // Enter tuşu ile giriş desteği
-    document.getElementById("usernameInput").addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        document.getElementById("passwordInput").focus();
-      }
-    });
-    document.getElementById("passwordInput").addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        loginAdmin();
-      }
-    });
-
-    // İşletmeci çıkışı
     function logoutAdmin() {
       isAdminLoggedIn = false;
       renderAdmin();
     }
 
-    // Giriş bilgilerini (kullanıcı adı ve şifre) güncelle
-    function saveCredentials() {
+    function updateCredentials() {
       const newUser = document.getElementById("newUsernameInput").value.trim();
       const newPass = document.getElementById("newPasswordInput").value.trim();
 
-      if (!newUser || !newPass) {
-        showStatus("credStatus", "Kullanıcı adı ve şifre alanları boş bırakılamaz.", true);
+      if (newUser.length < 3) {
+        showStatus("credStatus", "Kullanıcı adı en az 3 karakter olmalıdır.", true);
+        return;
+      }
+      if (newPass.length < 4) {
+        showStatus("credStatus", "Şifre en az 4 karakter olmalıdır.", true);
         return;
       }
 
       state.credentials = {
         username: newUser,
-        password: newPass
+        password: newPass,
+        isCustom: true
       };
       saveState();
+      document.getElementById("newUsernameInput").value = "";
       document.getElementById("newPasswordInput").value = "";
-      showStatus("credStatus", 
+      showStatus("credStatus", "Yeni kullanıcı adı ve şifre kaydedildi. Sonraki girişlerde geçerli olacaktır.");
+    }
+
+    function renderHeaderAndInfo() {
+      const { shopName, phone, address } = state.profile;
+      document.title = shopName + " — Randevu";
+      document.getElementById("headerShopName").textContent = shopName;
+      document.getElementById("infoCardTitle").textContent = shopName + " — Bilgiler";
+      document.getElementById("viewAddress").textContent = address || "Belirtilmedi";
+      document.getElementById("viewPhone").textContent = phone || "Belirtilmedi";
+    }
+
+    function renderServices() {
+      const wrap = document.getElementById("serviceList");
+      if (!state.services.length) {
+        selectedServiceId = null;
+        wrap.innerHTML = `<div class="empty-note">İşletme henüz hizmet listesi eklemedi.</div>`;
+        return;
+      }
+      if (!state.services.some(s => s.id === selectedServiceId)) {
+        selectedServiceId = state.services[0].id;
+      }
+      wrap.innerHTML = "";
+      state.services.forEach(srv => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn" + (srv.id === selectedServiceId ? " selected" : "");
+        btn.innerHTML = `<span>${escapeHtml(srv.name)}</span><span class="price-tag">${Number(srv.price)} TL</span>`;
+        btn.onclick = () => {
+          selectedServiceId = srv.id;
+          renderServices();
+        };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function renderStaff() {
+      const wrap = document.getElementById("staffList");
+      const activeStaff = state.staff.length ? state.staff : ["Salon Uzmanı"];
+      if (!activeStaff.includes(selectedStaff)) {
+        selectedStaff = activeStaff[0];
+      }
+      wrap.innerHTML = "";
+      activeStaff.forEach(person => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn" + (person === selectedStaff ? " selected" : "");
+        btn.textContent = person;
+        btn.onclick = () => {
+          selectedStaff = person;
+          if (isSlotTaken(selectedStaff, selectedSlot)) {
+            selectedSlot = null;
+          }
+          renderStaff();
+          renderSlots();
+        };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function isSlotTaken(staff, time) {
+      if (!time) return false;
+      return state.appointments.some(
+        a => a.staff === staff && a.time === time && a.status !== "İptal Edildi"
+      );
+    }
+
+    function renderSlots() {
+      const wrap = document.getElementById("slotList");
+      wrap.innerHTML = "";
+      HOURS.forEach(hour => {
+        const taken = isSlotTaken(selectedStaff, hour);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "slot-btn" + (!taken && selectedSlot === hour ? " selected" : "");
+        btn.textContent = hour;
+        btn.disabled = taken;
+        btn.onclick = () => {
+          selectedSlot = hour;
+          renderSlots();
+        };
+        wrap.appendChild(btn);
+      });
+    }
+
+    function createAppointment() {
+      const name = document.getElementById("custName").value.trim();
+      const phone = document.getElementById("custPhone").value.trim();
+      const srv = state.services.find(s => s.id === sele
