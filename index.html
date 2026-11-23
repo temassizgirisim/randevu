@@ -62,6 +62,7 @@
       background: #1c5036;
       color: #fff;
       white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
     }
     .tabs button.active {
       background: #d4af37;
@@ -309,7 +310,7 @@
       margin-bottom: 10px;
     }
     .row-between h2 { margin: 0; }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -320,8 +321,8 @@
       <p>09:00 – 22:00 Saatleri Arası Randevu</p>
     </div>
     <nav class="tabs">
-      <button type="button" id="tabCustomer" class="active" onclick="switchTab('customer')">Müşteri Paneli</button>
-      <button type="button" id="tabAdmin" onclick="switchTab('admin')">İşletmeci Paneli</button>
+      <button type="button" id="tabCustomer" class="active">Müşteri Paneli</button>
+      <button type="button" id="tabAdmin">İşletmeci Paneli</button>
     </nav>
   </header>
 
@@ -362,7 +363,7 @@
           <label for="custPhone">Telefon Numarası</label>
           <input type="tel" id="custPhone" placeholder="05xx xxx xx xx" />
         </div>
-        <button type="button" class="btn-primary" onclick="createAppointment()">Randevuyu Onayla</button>
+        <button type="button" class="btn-primary" id="btnCreateAppt">Randevuyu Onayla</button>
         <div id="custStatus" class="status-msg"></div>
       </div>
     </section>
@@ -379,7 +380,7 @@
           <label for="passInput">Şifre</label>
           <input type="password" id="passInput" placeholder="Şifrenizi girin" autocomplete="current-password" />
         </div>
-        <button type="button" class="btn-primary" onclick="loginAdmin()">Giriş Yap</button>
+        <button type="button" class="btn-primary" id="btnLogin">Giriş Yap</button>
         <div id="loginStatus" class="status-msg"></div>
       </div>
 
@@ -387,7 +388,7 @@
         <div class="card">
           <div class="row-between">
             <h2>Dükkan Bilgileri</h2>
-            <button type="button" class="btn-logout" onclick="logoutAdmin()">Çıkış</button>
+            <button type="button" class="btn-logout" id="btnLogout">Çıkış</button>
           </div>
           <div class="field">
             <label for="shopNameInput">Dükkan / Şube Adı</label>
@@ -401,7 +402,7 @@
             <label for="shopAddressInput">Dükkan Adresi</label>
             <textarea id="shopAddressInput" placeholder="Mahalle, cadde, sokak, no, ilçe/il"></textarea>
           </div>
-          <button type="button" class="btn-gold" onclick="saveShopProfile()">Dükkan Bilgilerini Kaydet</button>
+          <button type="button" class="btn-gold" id="btnSaveProfile">Dükkan Bilgilerini Kaydet</button>
           <div id="profileStatus" class="status-msg"></div>
         </div>
 
@@ -415,7 +416,7 @@
             <label for="newServicePrice">Ücret (TL)</label>
             <input type="number" id="newServicePrice" placeholder="Örn: 350" min="0" />
           </div>
-          <button type="button" class="btn-primary" onclick="addService()">Hizmet Ekle</button>
+          <button type="button" class="btn-primary" id="btnAddService">Hizmet Ekle</button>
           <div id="serviceStatus" class="status-msg"></div>
           <div class="manage-list" id="adminServiceList"></div>
         </div>
@@ -426,7 +427,7 @@
             <label for="newStaffName">Uzman Adı</label>
             <input type="text" id="newStaffName" placeholder="Örn: Ayşe Hanım, Ahmet Usta..." />
           </div>
-          <button type="button" class="btn-primary" onclick="addStaff()">Personel Ekle</button>
+          <button type="button" class="btn-primary" id="btnAddStaff">Personel Ekle</button>
           <div id="staffStatus" class="status-msg"></div>
           <div class="manage-list" id="adminStaffList"></div>
         </div>
@@ -446,7 +447,7 @@
             <label for="newPasswordInput">Yeni Şifre</label>
             <input type="password" id="newPasswordInput" placeholder="Yeni şifre" />
           </div>
-          <button type="button" class="btn-gold" onclick="updateCredentials()">Giriş Bilgilerini Kaydet</button>
+          <button type="button" class="btn-gold" id="btnUpdateCreds">Giriş Bilgilerini Kaydet</button>
           <div id="credStatus" class="status-msg"></div>
         </div>
       </div>
@@ -454,215 +455,211 @@
   </main>
 
   <script>
-    const STORAGE_KEY = "kuafor_randevu_v4";
+    (function () {
+      var STORAGE_KEY = "kuafor_randevu_v5";
 
-    const HOURS = [
-      "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
-      "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
-      "21:00", "22:00"
-    ];
+      var HOURS = [
+        "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
+        "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
+        "21:00", "22:00"
+      ];
 
-    const DEFAULT_DATA = {
-      credentials: {
-        username: "isletmeci",
-        password: "1234",
-        isCustom: false
-      },
-      profile: {
-        shopName: "Kuaför Salonu",
-        phone: "Belirtilmedi",
-        address: "Belirtilmedi"
-      },
-      services: [],
-      staff: [],
-      appointments: []
-    };
-
-    function normalizeUser(val) {
-      return String(val || "")
-        .trim()
-        .toLowerCase()
-        .replaceAll("ş", "s")
-        .replaceAll("ı", "i")
-        .replaceAll("İ", "i");
-    }
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(DEFAULT_DATA);
-        const parsed = JSON.parse(raw);
+      function getDefaultData() {
         return {
-          credentials: { ...DEFAULT_DATA.credentials, ...(parsed.credentials || {}) },
-          profile: { ...DEFAULT_DATA.profile, ...(parsed.profile || {}) },
-          services: Array.isArray(parsed.services) ? parsed.services : [],
-          staff: Array.isArray(parsed.staff) ? parsed.staff : [],
-          appointments: Array.isArray(parsed.appointments) ? parsed.appointments : []
+          credentials: {
+            username: "isletmeci",
+            password: "1234",
+            isCustom: false
+          },
+          profile: {
+            shopName: "Kuaför Salonu",
+            phone: "Belirtilmedi",
+            address: "Belirtilmedi"
+          },
+          services: [],
+          staff: [],
+          appointments: []
         };
-      } catch {
-        return structuredClone(DEFAULT_DATA);
-      }
-    }
-
-    let state = loadState();
-    let isAdminLoggedIn = false;
-    let selectedServiceId = state.services[0]?.id ?? null;
-    let selectedStaff = state.staff[0] ?? "Salon Uzmanı";
-    let selectedSlot = null;
-
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-
-    function showStatus(elId, message, isError = false) {
-      const el = document.getElementById(elId);
-      el.textContent = message;
-      el.className = "status-msg " + (isError ? "err" : "ok");
-    }
-
-    function switchTab(tab) {
-      const isCustomer = tab === "customer";
-      document.getElementById("tabCustomer").classList.toggle("active", isCustomer);
-      document.getElementById("tabAdmin").classList.toggle("active", !isCustomer);
-      document.getElementById("customerView").classList.toggle("hidden", !isCustomer);
-      document.getElementById("adminView").classList.toggle("hidden", isCustomer);
-      renderAll();
-    }
-
-    function loginAdmin() {
-      const enteredUser = normalizeUser(document.getElementById("userInput").value);
-      const enteredPass = document.getElementById("passInput").value.trim();
-
-      const savedUser = normalizeUser(state.credentials.username);
-      const savedPass = state.credentials.password;
-
-      const userMatches = state.credentials.isCustom
-        ? enteredUser === savedUser
-        : (enteredUser === savedUser || enteredUser === "admin");
-
-      if (userMatches && enteredPass === savedPass) {
-        isAdminLoggedIn = true;
-        document.getElementById("userInput").value = "";
-        document.getElementById("passInput").value = "";
-        document.getElementById("loginStatus").className = "status-msg";
-        renderAdmin();
-      } else {
-        showStatus("loginStatus", "Kullanıcı adı veya şifre hatalı.", true);
-      }
-    }
-
-    function logoutAdmin() {
-      isAdminLoggedIn = false;
-      renderAdmin();
-    }
-
-    function updateCredentials() {
-      const newUser = document.getElementById("newUsernameInput").value.trim();
-      const newPass = document.getElementById("newPasswordInput").value.trim();
-
-      if (newUser.length < 3) {
-        showStatus("credStatus", "Kullanıcı adı en az 3 karakter olmalıdır.", true);
-        return;
-      }
-      if (newPass.length < 4) {
-        showStatus("credStatus", "Şifre en az 4 karakter olmalıdır.", true);
-        return;
       }
 
-      state.credentials = {
-        username: newUser,
-        password: newPass,
-        isCustom: true
-      };
-      saveState();
-      document.getElementById("newUsernameInput").value = "";
-      document.getElementById("newPasswordInput").value = "";
-      showStatus("credStatus", "Yeni kullanıcı adı ve şifre kaydedildi. Sonraki girişlerde geçerli olacaktır.");
-    }
-
-    function renderHeaderAndInfo() {
-      const { shopName, phone, address } = state.profile;
-      document.title = shopName + " — Randevu";
-      document.getElementById("headerShopName").textContent = shopName;
-      document.getElementById("infoCardTitle").textContent = shopName + " — Bilgiler";
-      document.getElementById("viewAddress").textContent = address || "Belirtilmedi";
-      document.getElementById("viewPhone").textContent = phone || "Belirtilmedi";
-    }
-
-    function renderServices() {
-      const wrap = document.getElementById("serviceList");
-      if (!state.services.length) {
-        selectedServiceId = null;
-        wrap.innerHTML = `<div class="empty-note">İşletme henüz hizmet listesi eklemedi.</div>`;
-        return;
+      function normalizeUser(val) {
+        return String(val || "")
+          .trim()
+          .toLowerCase()
+          .replace(/ş/g, "s")
+          .replace(/ı/g, "i")
+          .replace(/İ/g, "i");
       }
-      if (!state.services.some(s => s.id === selectedServiceId)) {
-        selectedServiceId = state.services[0].id;
-      }
-      wrap.innerHTML = "";
-      state.services.forEach(srv => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "option-btn" + (srv.id === selectedServiceId ? " selected" : "");
-        btn.innerHTML = `<span>${escapeHtml(srv.name)}</span><span class="price-tag">${Number(srv.price)} TL</span>`;
-        btn.onclick = () => {
-          selectedServiceId = srv.id;
-          renderServices();
-        };
-        wrap.appendChild(btn);
-      });
-    }
 
-    function renderStaff() {
-      const wrap = document.getElementById("staffList");
-      const activeStaff = state.staff.length ? state.staff : ["Salon Uzmanı"];
-      if (!activeStaff.includes(selectedStaff)) {
-        selectedStaff = activeStaff[0];
+      function loadState() {
+        var def = getDefaultData();
+        try {
+          var raw = window.localStorage ? localStorage.getItem(STORAGE_KEY) : null;
+          if (!raw) return def;
+          var parsed = JSON.parse(raw);
+          return {
+            credentials: Object.assign({}, def.credentials, parsed.credentials || {}),
+            profile: Object.assign({}, def.profile, parsed.profile || {}),
+            services: Array.isArray(parsed.services) ? parsed.services : [],
+            staff: Array.isArray(parsed.staff) ? parsed.staff : [],
+            appointments: Array.isArray(parsed.appointments) ? parsed.appointments : []
+          };
+        } catch (e) {
+          return def;
+        }
       }
-      wrap.innerHTML = "";
-      activeStaff.forEach(person => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "option-btn" + (person === selectedStaff ? " selected" : "");
-        btn.textContent = person;
-        btn.onclick = () => {
-          selectedStaff = person;
-          if (isSlotTaken(selectedStaff, selectedSlot)) {
-            selectedSlot = null;
+
+      var state = loadState();
+      var isAdminLoggedIn = false;
+      var selectedServiceId = state.services.length ? state.services[0].id : null;
+      var selectedStaff = state.staff.length ? state.staff[0] : "Salon Uzmanı";
+      var selectedSlot = null;
+
+      function saveState() {
+        try {
+          if (window.localStorage) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
           }
-          renderStaff();
-          renderSlots();
+        } catch (e) {}
+      }
+
+      function showStatus(elId, message, isError) {
+        var el = document.getElementById(elId);
+        if (!el) return;
+        el.textContent = message;
+        el.className = "status-msg " + (isError ? "err" : "ok");
+      }
+
+      function switchTab(tab) {
+        var isCustomer = tab === "customer";
+        document.getElementById("tabCustomer").classList.toggle("active", isCustomer);
+        document.getElementById("tabAdmin").classList.toggle("active", !isCustomer);
+        document.getElementById("customerView").classList.toggle("hidden", !isCustomer);
+        document.getElementById("adminView").classList.toggle("hidden", isCustomer);
+        renderAll();
+      }
+
+      function loginAdmin() {
+        var enteredUser = normalizeUser(document.getElementById("userInput").value);
+        var enteredPass = document.getElementById("passInput").value.trim();
+
+        var savedUser = normalizeUser(state.credentials.username);
+        var savedPass = state.credentials.password;
+
+        var userMatches = state.credentials.isCustom
+          ? enteredUser === savedUser
+          : (enteredUser === savedUser || enteredUser === "admin");
+
+        if (userMatches && enteredPass === savedPass) {
+          isAdminLoggedIn = true;
+          document.getElementById("userInput").value = "";
+          document.getElementById("passInput").value = "";
+          document.getElementById("loginStatus").className = "status-msg";
+          renderAdmin();
+        } else {
+          showStatus("loginStatus", "Kullanıcı adı veya şifre hatalı.", true);
+        }
+      }
+
+      function logoutAdmin() {
+        isAdminLoggedIn = false;
+        renderAdmin();
+      }
+
+      function updateCredentials() {
+        var newUser = document.getElementById("newUsernameInput").value.trim();
+        var newPass = document.getElementById("newPasswordInput").value.trim();
+
+        if (newUser.length < 3) {
+          showStatus("credStatus", "Kullanıcı adı en az 3 karakter olmalıdır.", true);
+          return;
+        }
+        if (newPass.length < 4) {
+          showStatus("credStatus", "Şifre en az 4 karakter olmalıdır.", true);
+          return;
+        }
+
+        state.credentials = {
+          username: newUser,
+          password: newPass,
+          isCustom: true
         };
-        wrap.appendChild(btn);
-      });
-    }
+        saveState();
+        document.getElementById("newUsernameInput").value = "";
+        document.getElementById("newPasswordInput").value = "";
+        showStatus("credStatus", "Yeni kullanıcı adı ve şifre kaydedildi. Sonraki girişlerde geçerli olacaktır.");
+      }
 
-    function isSlotTaken(staff, time) {
-      if (!time) return false;
-      return state.appointments.some(
-        a => a.staff === staff && a.time === time && a.status !== "İptal Edildi"
-      );
-    }
+      function renderHeaderAndInfo() {
+        var shopName = state.profile.shopName || "Kuaför Salonu";
+        document.title = shopName + " — Randevu";
+        document.getElementById("headerShopName").textContent = shopName;
+        document.getElementById("infoCardTitle").textContent = shopName + " — Bilgiler";
+        document.getElementById("viewAddress").textContent = state.profile.address || "Belirtilmedi";
+        document.getElementById("viewPhone").textContent = state.profile.phone || "Belirtilmedi";
+      }
 
-    function renderSlots() {
-      const wrap = document.getElementById("slotList");
-      wrap.innerHTML = "";
-      HOURS.forEach(hour => {
-        const taken = isSlotTaken(selectedStaff, hour);
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "slot-btn" + (!taken && selectedSlot === hour ? " selected" : "");
-        btn.textContent = hour;
-        btn.disabled = taken;
-        btn.onclick = () => {
-          selectedSlot = hour;
-          renderSlots();
-        };
-        wrap.appendChild(btn);
-      });
-    }
+      function renderServices() {
+        var wrap = document.getElementById("serviceList");
+        wrap.innerHTML = "";
+        if (!state.services.length) {
+          selectedServiceId = null;
+          var empty = document.createElement("div");
+          empty.className = "empty-note";
+          empty.textContent = "İşletme henüz hizmet listesi eklemedi.";
+          wrap.appendChild(empty);
+          return;
+        }
+        var exists = state.services.some(function (s) { return s.id === selectedServiceId; });
+        if (!exists) {
+          selectedServiceId = state.services[0].id;
+        }
+        state.services.forEach(function (srv) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "option-btn" + (srv.id === selectedServiceId ? " selected" : "");
 
-    function createAppointment() {
-      const name = document.getElementById("custName").value.trim();
-      const phone = document.getElementById("custPhone").value.trim();
-      const srv = state.services.find(s => s.id === sele
+          var nameSpan = document.createElement("span");
+          nameSpan.textContent = srv.name;
+
+          var priceSpan = document.createElement("span");
+          priceSpan.className = "price-tag";
+          priceSpan.textContent = Number(srv.price) + " TL";
+
+          btn.appendChild(nameSpan);
+          btn.appendChild(priceSpan);
+          btn.addEventListener("click", function () {
+            selectedServiceId = srv.id;
+            renderServices();
+          });
+          wrap.appendChild(btn);
+        });
+      }
+
+      function renderStaff() {
+        var wrap = document.getElementById("staffList");
+        wrap.innerHTML = "";
+        var activeStaff = state.staff.length ? state.staff : ["Salon Uzmanı"];
+        if (activeStaff.indexOf(selectedStaff) === -1) {
+          selectedStaff = activeStaff[0];
+        }
+        activeStaff.forEach(function (person) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "option-btn" + (person === selectedStaff ? " selected" : "");
+          btn.textContent = person;
+          btn.addEventListener("click", function () {
+            selectedStaff = person;
+            if (isSlotTaken(selectedStaff, selectedSlot)) {
+              selectedSlot = null;
+            }
+            renderStaff();
+            renderSlots();
+          });
+          wrap.appendChild(btn);
+        });
+      }
+
+      function isSlotTaken(staff, time) {
+        if (!time) return false;
+    
