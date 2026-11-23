@@ -276,10 +276,12 @@
     }
     .appt-actions {
       display: flex;
+      flex-wrap: wrap;
       gap: 6px;
       margin-top: 8px;
     }
     .appt-actions button,
+    .appt-actions a,
     .btn-mini-del {
       padding: 6px 10px;
       border: none;
@@ -287,9 +289,13 @@
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
     }
     .btn-approve { background: #1e7e46; color: #fff; }
     .btn-cancel  { background: #e0a800; color: #16201a; }
+    .btn-wa      { background: #128c7e; color: #fff; }
     .btn-delete,
     .btn-mini-del { background: #c92a2a; color: #fff; }
     .btn-logout {
@@ -456,7 +462,7 @@
 
   <script>
     (function () {
-      var STORAGE_KEY = "kuafor_randevu_v5";
+      var STORAGE_KEY = "kuafor_randevu_v6";
 
       var HOURS = [
         "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
@@ -489,6 +495,27 @@
           .replace(/ş/g, "s")
           .replace(/ı/g, "i")
           .replace(/İ/g, "i");
+      }
+
+      function formatWaPhone(rawPhone) {
+        var digits = String(rawPhone || "").replace(/\D/g, "");
+        if (!digits) return "";
+        if (digits.indexOf("90") === 0 && digits.length >= 12) return digits;
+        if (digits.indexOf("0") === 0) return "90" + digits.slice(1);
+        if (digits.length === 10) return "90" + digits;
+        return digits;
+      }
+
+      function buildApprovalWaUrl(appt, shopName) {
+        var phone = formatWaPhone(appt.customerPhone);
+        var text =
+          "Merhaba " + appt.customerName + ", " +
+          (shopName || "Salonumuz") + " için " +
+          appt.time + " saatli (" + appt.serviceName + ") randevunuz onaylanmıştır.";
+        var encoded = encodeURIComponent(text);
+        return phone
+          ? "https://wa.me/" + phone + "?text=" + encoded
+          : "https://wa.me/?text=" + encoded;
       }
 
       function loadState() {
@@ -630,36 +657,4 @@
           btn.appendChild(priceSpan);
           btn.addEventListener("click", function () {
             selectedServiceId = srv.id;
-            renderServices();
-          });
-          wrap.appendChild(btn);
-        });
-      }
-
-      function renderStaff() {
-        var wrap = document.getElementById("staffList");
-        wrap.innerHTML = "";
-        var activeStaff = state.staff.length ? state.staff : ["Salon Uzmanı"];
-        if (activeStaff.indexOf(selectedStaff) === -1) {
-          selectedStaff = activeStaff[0];
-        }
-        activeStaff.forEach(function (person) {
-          var btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "option-btn" + (person === selectedStaff ? " selected" : "");
-          btn.textContent = person;
-          btn.addEventListener("click", function () {
-            selectedStaff = person;
-            if (isSlotTaken(selectedStaff, selectedSlot)) {
-              selectedSlot = null;
-            }
-            renderStaff();
-            renderSlots();
-          });
-          wrap.appendChild(btn);
-        });
-      }
-
-      function isSlotTaken(staff, time) {
-        if (!time) return false;
-    
+           
