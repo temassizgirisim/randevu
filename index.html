@@ -3,16 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Temassız Girişim — Takipsiz Randevu</title>
+  <title>Randevu Sistemi</title>
   <style>
+    /* Genel kutu modeli ve temel sayfa stilleri */
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       background: #f4f6f4;
       color: #16201a;
       overflow-x: hidden;
     }
+
+    /* Üst sabit başlık ve sekme çubuğu */
     .top {
       background: #113825;
       color: #fff;
@@ -21,6 +24,7 @@
       position: sticky;
       top: 0;
       z-index: 40;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
     }
     .top-head {
       max-width: 700px;
@@ -43,6 +47,8 @@
       font-size: 12px;
       color: #d6e6dd;
     }
+
+    /* Müşteri / İşletmeci geçiş sekmeleri */
     .tabs {
       max-width: 700px;
       margin: 0 auto;
@@ -53,471 +59,620 @@
     .tabs button {
       width: 100%;
       min-width: 0;
-      padding: 10px 8px;
+      padding: 11px 8px;
       border: none;
-      border-radius: 9px;
+      border-radius: 10px;
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
       background: #1c5036;
       color: #fff;
       white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease;
     }
     .tabs button.active {
       background: #d4af37;
       color: #113825;
     }
-    .wrap {
+
+    /* Ana içerik konteyneri ve kartlar */
+    .container {
       max-width: 700px;
-      margin: 14px auto;
-      padding: 0 12px 70px;
+      margin: 16px auto 40px;
+      padding: 0 12px;
     }
-    .box {
+    .card {
       background: #fff;
-      border: 1px solid #dce3de;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-    .box h3 {
-      margin: 0 0 10px;
-      font-size: 15px;
-      color: #113825;
-    }
-    .hero {
-      background: linear-gradient(135deg, #113825 0%, #1d573b 100%);
-      color: #fff;
+      border: 1px solid #dce5df;
       border-radius: 14px;
       padding: 16px;
-      margin-bottom: 12px;
-      border: 1px solid rgba(212, 175, 55, 0.35);
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
-    .hero-tag {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      color: #f5e6b3;
-      border: 1px solid #d4af37;
-      border-radius: 999px;
-      padding: 3px 10px;
-      margin-bottom: 8px;
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #113825;
     }
-    .hero h2 {
-      margin: 2px 0 4px;
-      font-size: 21px;
+
+    /* İşletme bilgi özeti */
+    .shop-meta {
+      font-size: 13px;
+      color: #36473d;
+      line-height: 1.5;
     }
-    .hero small {
-      color: #d6e6dd;
-      font-size: 12.5px;
+    .shop-meta div {
+      margin-top: 4px;
     }
-    .btn-opt {
+
+    /* Boş durum bilgilendirme kutusu */
+    .empty-box {
+      padding: 12px;
+      border-radius: 10px;
+      background: #f8faf8;
+      border: 1px dashed #c4d1c9;
+      color: #4f6157;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* Hizmet ve personel seçim butonları */
+    .option-list {
+      display: grid;
+      gap: 8px;
+    }
+    .option-btn {
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: 100%;
-      text-align: left;
-      padding: 11px 12px;
-      margin-bottom: 8px;
-      border: 1.5px solid #cbd5ce;
+      padding: 12px;
+      border: 1.5px solid #cfd9d2;
       border-radius: 10px;
       background: #fff;
-      cursor: pointer;
-      font-size: 14px;
       color: #16201a;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
     }
-    .btn-opt.sel {
+    .option-btn.selected {
       border-color: #113825;
-      background: #eaf4ee;
-      font-weight: 700;
+      background: #eef6f1;
     }
-    .price-pill {
+    .price-tag {
       background: #f5e6b3;
       color: #113825;
-      font-weight: 800;
       padding: 4px 9px;
-      border-radius: 7px;
-      font-size: 13px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
     }
-    .slots {
+    .staff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    @media (max-width: 420px) {
+      .staff-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 09:00 - 22:00 saat seçim ızgarası */
+    .slots-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
-    .slot {
-      padding: 10px;
-      border: 1.5px solid #cbd5ce;
-      border-radius: 8px;
+    @media (min-width: 520px) {
+      .slots-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .slot-btn {
+      padding: 11px 6px;
+      border: 1.5px solid #cfd9d2;
+      border-radius: 10px;
       background: #fff;
+      color: #16201a;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
-      font-size: 14px;
+      text-align: center;
+      transition: all 0.15s ease;
     }
-    .slot.sel {
-      background: #d4af37;
+    .slot-btn.selected {
+      background: #113825;
+      color: #fff;
       border-color: #113825;
-      color: #113825;
     }
-    .slot.busy {
-      background: #efefef;
-      color: #999;
-      text-decoration: line-through;
+    .slot-btn:disabled {
+      background: #eef1ef;
+      color: #9aa69f;
+      border-color: #e0e6e2;
       cursor: not-allowed;
+      text-decoration: line-through;
     }
-    input, select {
-      width: 100%;
-      padding: 10px 11px;
+
+    /* Form elemanları */
+    .field {
       margin-bottom: 10px;
-      border: 1px solid #c5d0c8;
-      border-radius: 8px;
-      font-size: 14px;
-      background: #fff;
     }
-    .main-btn {
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #24332a;
+    }
+    .field input,
+    .field textarea {
       width: 100%;
-      padding: 12px;
+      padding: 11px 12px;
+      border: 1.5px solid #c6d1ca;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+    .field input:focus,
+    .field textarea:focus {
+      border-color: #113825;
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    /* Ana aksiyon butonları */
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
       border: none;
       border-radius: 10px;
       background: #113825;
       color: #fff;
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 800;
       cursor: pointer;
     }
-    .gold-btn {
+    .btn-gold {
       width: 100%;
-      padding: 11px;
+      padding: 13px;
       border: none;
       border-radius: 10px;
       background: #d4af37;
       color: #113825;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-      margin-top: 6px;
     }
-    .appt {
-      border: 1px solid #dce3de;
+
+    /* Bildirim kutusu */
+    .status-msg {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+    }
+    .status-msg.ok {
+      display: block;
+      background: #e6f4ec;
+      color: #114b2b;
+      border: 1px solid #b5dec6;
+    }
+    .status-msg.err {
+      display: block;
+      background: #fdeceb;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+    }
+
+    /* İşletmeci yönetim listeleri (Hizmet & Personel) */
+    .manage-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .manage-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #dce5df;
+      border-radius: 10px;
+      background: #fafcfb;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .manage-item-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* İşletmeci panelindeki randevu listesi */
+    .appt-item {
+      border: 1px solid #e1e8e4;
       border-radius: 10px;
       padding: 11px;
       margin-bottom: 8px;
       background: #fafcfb;
     }
-    .small-btn {
-      padding: 7px 10px;
-      border: none;
-      border-radius: 7px;
-      cursor: pointer;
+    .appt-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
       font-weight: 700;
+    }
+    .appt-sub {
       font-size: 12px;
-      margin-right: 6px;
+      color: #46574d;
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+    .appt-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
       margin-top: 8px;
     }
-    .ok { background: #1b7a46; color: #fff; }
-    .del { background: #c93b3b; color: #fff; }
-    .hide { display: none; }
-    .foot {
-      text-align: center;
+    .appt-actions button {
+      padding: 7px 11px;
+      border: none;
+      border-radius: 8px;
       font-size: 12px;
-      color: #5c6b62;
-      margin-top: 16px;
+      font-weight: 700;
+      cursor: pointer;
     }
+    .btn-approve { background: #1e7e46; color: #fff; }
+    .btn-cancel  { background: #e0a800; color: #16201a; }
+    .btn-delete  {
+      background: #c92a2a;
+      color: #fff;
+      border: none;
+      padding: 7px 11px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-logout  {
+      background: #eef2ef;
+      color: #16201a;
+      border: 1px solid #cbd5ce;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .row-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .row-between h2 { margin: 0; }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-
-  <div class="top">
+  <!-- Üst Bilgi ve Sekme Seçimi -->
+  <header class="top">
     <div class="top-head">
-      <div class="top-brand">TEMASSIZ GİRİŞİM</div>
-      <h1>Takipsiz Randevu</h1>
-      <p>KOLAY • GÜVENLİ • ZAHMETSİZ</p>
+      <div class="top-brand" id="brandBadge">RANDEVU SİSTEMİ</div>
+      <h1 id="headerShopName">İşletme Randevu</h1>
+      <p id="headerShopSub">09:00 – 22:00 Saatleri Arası Randevu</p>
     </div>
-    <div class="tabs">
-      <button type="button" id="tabCust" class="active" onclick="showPanel('cust')">Müşteri Paneli</button>
-      <button type="button" id="tabAdm" onclick="showPanel('adm')">İşletmeci Paneli</button>
-    </div>
-  </div>
+    <nav class="tabs">
+      <button type="button" id="tabCustomer" class="active" onclick="switchTab('customer')">Müşteri Paneli</button>
+      <button type="button" id="tabAdmin" onclick="switchTab('admin')">İşletmeci Paneli</button>
+    </nav>
+  </header>
 
-  <div class="wrap">
+  <main class="container">
     <!-- MÜŞTERİ PANELİ -->
-    <div id="panelCust">
-      <div class="hero">
-        <div class="hero-tag">★ TEMASSIZ GİRİŞİM • TAKİPSİZ RANDEVU</div>
-        <h2 id="bizTitle">Takipsiz Randevu</h2>
-        <small>KOLAY • GÜVENLİ • ZAHMETSİZ — Randevunuzu saniyeler içinde oluşturun</small>
+    <section id="customerView">
+      <!-- Dükkan ve İletişim Özeti -->
+      <div class="card">
+        <h2 id="infoCardTitle">İşletme Bilgileri</h2>
+        <div class="shop-meta">
+          <div><strong>Adres:</strong> <span id="viewAddress">-</span></div>
+          <div><strong>Telefon:</strong> <span id="viewPhone">-</span></div>
+          <div><strong>Çalışma Saatleri:</strong> 09:00 – 22:00</div>
+        </div>
       </div>
 
-      <div class="box">
-        <h3>1. Hizmet Seçin</h3>
-        <div id="srvList"></div>
+      <!-- Adım 1: Hizmet Seçimi -->
+      <div class="card">
+        <h2>1. Hizmet Seçin</h2>
+        <div class="option-list" id="serviceList"></div>
       </div>
 
-      <div class="box">
-        <h3>2. Uzman / Personel Seçin</h3>
-        <div id="stfList"></div>
+      <!-- Adım 2: Uzman / Personel Seçimi -->
+      <div class="card">
+        <h2>2. Uzman / Personel Seçin</h2>
+        <div class="staff-grid" id="staffList"></div>
       </div>
 
-      <div class="box">
-        <h3>3. Saat Seçin</h3>
-        <div class="slots" id="slotList"></div>
+      <!-- Adım 3: Saat Seçimi (09:00 - 22:00) -->
+      <div class="card">
+        <h2>3. Saat Seçin (09:00 – 22:00)</h2>
+        <div class="slots-grid" id="slotList"></div>
       </div>
 
-      <div class="box">
-        <h3>4. Bilgileriniz</h3>
-        <input type="text" id="cName" placeholder="Ad Soyad" />
-        <input type="tel" id="cPhone" placeholder="Telefon Numarası (05xx...)" />
-        <button type="button" class="main-btn" onclick="createAppt()">Randevuyu Onayla</button>
-        <div id="custMsg" style="margin-top:10px; font-weight:700; color:#113825;"></div>
+      <!-- Adım 4: Müşteri Bilgileri ve Onay -->
+      <div class="card">
+        <h2>4. Bilgileriniz</h2>
+        <div class="field">
+          <label for="custName">Ad Soyad</label>
+          <input type="text" id="custName" placeholder="Adınız Soyadınız" />
+        </div>
+        <div class="field">
+          <label for="custPhone">Telefon Numarası</label>
+          <input type="tel" id="custPhone" placeholder="05xx xxx xx xx" />
+        </div>
+        <button type="button" class="btn-primary" onclick="createAppointment()">Randevuyu Onayla</button>
+        <div id="custStatus" class="status-msg"></div>
       </div>
-    </div>
+    </section>
 
     <!-- İŞLETMECİ PANELİ -->
-    <div id="panelAdm" class="hide">
-      <div class="box" id="admLogin">
-        <h3>İşletmeci Girişi</h3>
-        <input type="password" id="admPin" placeholder="PIN Kodu (1234)" />
-        <button type="button" class="main-btn" onclick="loginAdm()">Giriş Yap</button>
-        <button type="button" class="gold-btn" onclick="demoAdm()">Hızlı Giriş</button>
+    <section id="adminView" class="hidden">
+      <!-- Kullanıcı Adı & Şifre Giriş Ekranı -->
+      <div class="card" id="adminLoginCard">
+        <h2>İşletmeci Girişi</h2>
+        <div class="field">
+          <label for="usernameInput">Kullanıcı Adı</label>
+          <input type="text" id="usernameInput" autocomplete="username" placeholder="Kullanıcı adınızı girin" />
+        </div>
+        <div class="field">
+          <label for="passwordInput">Şifre</label>
+          <input type="password" id="passwordInput" autocomplete="current-password" placeholder="Şifrenizi girin" />
+        </div>
+        <button type="button" class="btn-primary" onclick="loginAdmin()">Giriş Yap</button>
+        <div id="loginStatus" class="status-msg"></div>
       </div>
 
-      <div id="admArea" class="hide">
-        <div class="box">
-          <h3>Gelen Randevular</h3>
-          <div id="admAppts"></div>
+      <!-- İşletmeci Yönetim Alanı -->
+      <div id="adminDashboard" class="hidden">
+        <!-- Dükkan Bilgileri Formu -->
+        <div class="card">
+          <div class="row-between">
+            <h2>Dükkan Bilgileri</h2>
+            <button type="button" class="btn-logout" onclick="logoutAdmin()">Çıkış</button>
+          </div>
+          <div class="field">
+            <label for="shopNameInput">Dükkan / Şube Adı</label>
+            <input type="text" id="shopNameInput" placeholder="Dükkan veya salon adını girin" />
+          </div>
+          <div class="field">
+            <label for="shopPhoneInput">İletişim Telefonu</label>
+            <input type="tel" id="shopPhoneInput" placeholder="05xx xxx xx xx" />
+          </div>
+          <div class="field">
+            <label for="shopAddressInput">Dükkan Adresi</label>
+            <textarea id="shopAddressInput" placeholder="Mahalle, cadde, sokak, no, ilçe/il"></textarea>
+          </div>
+          <button type="button" class="btn-gold" onclick="saveShopProfile()">Bilgileri Kaydet</button>
+          <div id="profileStatus" class="status-msg"></div>
         </div>
 
-        <div class="box">
-          <h3>Yeni Hizmet Ekle</h3>
-          <input type="text" id="newSrvName" placeholder="Hizmet Adı" />
-          <input type="number" id="newSrvPrice" placeholder="Fiyat (TL)" />
-          <button type="button" class="main-btn" onclick="addSrv()">Hizmet Ekle</button>
+        <!-- Giriş Bilgilerini Değiştir -->
+        <div class="card">
+          <h2>Giriş Bilgilerini Değiştir</h2>
+          <div class="field">
+            <label for="newUsernameInput">Yeni Kullanıcı Adı</label>
+            <input type="text" id="newUsernameInput" placeholder="Yeni kullanıcı adını girin" />
+          </div>
+          <div class="field">
+            <label for="newPasswordInput">Yeni Şifre</label>
+            <input type="password" id="newPasswordInput" placeholder="Yeni şifrenizi girin" />
+          </div>
+          <button type="button" class="btn-primary" onclick="saveCredentials()">Giriş Bilgilerini Güncelle</button>
+          <div id="credStatus" class="status-msg"></div>
         </div>
 
-        <div class="box">
-          <h3>İşletme / Şube Başlığı</h3>
-          <input type="text" id="newBizName" placeholder="İşletme Adı" />
-          <button type="button" class="gold-btn" onclick="saveBiz()">Kaydet</button>
+        <!-- Hizmet Yönetimi -->
+        <div class="card">
+          <h2>Hizmetler ve Fiyatlar</h2>
+          <div class="field">
+            <label for="newServiceName">Hizmet Adı</label>
+            <input type="text" id="newServiceName" placeholder="Örn: Fön, Kesim, Boya, Cilt Bakımı..." />
+          </div>
+          <div class="field">
+            <label for="newServicePrice">Ücret (TL)</label>
+            <input type="number" id="newServicePrice" placeholder="Örn: 400" min="0" />
+          </div>
+          <button type="button" class="btn-primary" onclick="addService()">Hizmet Ekle</button>
+          <div id="serviceStatus" class="status-msg"></div>
+          <div class="manage-list" id="adminServiceList"></div>
+        </div>
+
+        <!-- Personel / Uzman Yönetimi -->
+        <div class="card">
+          <h2>Uzman / Personel Yönetimi</h2>
+          <div class="field">
+            <label for="newStaffName">Uzman / Personel Adı</label>
+            <input type="text" id="newStaffName" placeholder="Örn: Ayşe Hanım, Ahmet Bey..." />
+          </div>
+          <button type="button" class="btn-primary" onclick="addStaff()">Personel Ekle</button>
+          <div id="staffStatus" class="status-msg"></div>
+          <div class="manage-list" id="adminStaffList"></div>
+        </div>
+
+        <!-- Gelen Randevular -->
+        <div class="card">
+          <h2>Gelen Randevular</h2>
+          <div id="adminAppointments"></div>
         </div>
       </div>
-    </div>
-
-    <div class="foot">
-      Temassız Girişim — Takipsiz Randevu • KOLAY - GÜVENLİ - ZAHMETSİZ
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script>
-    var KEY = "tg_takipsiz_randevu_v1";
-    var SLOTS = ["09:30", "11:00", "13:00", "14:30", "16:00", "17:30"];
+    const STORAGE_KEY = "kuafor_randevu_v4";
 
-    var state = {
-      bizName: "Takipsiz Randevu",
-      pin: "1234",
-      services: [
-        { id: "1", name: "Standart Randevu Paketi", price: 500 },
-        { id: "2", name: "Özel Danışmanlık Seansı", price: 850 },
-        { id: "3", name: "Hızlı İşlem Randevusu", price: 350 }
-      ],
-      staff: [
-        { id: "a", name: "Uzman 1" },
-        { id: "b", name: "Uzman 2" }
-      ],
-      appts: [
-        { id: "101", name: "Örnek Müşteri", phone: "05320001122", srvId: "1", stfId: "a", time: "11:00", status: "Onaylandı" }
-      ],
-      selSrv: "1",
-      selStf: "a",
-      selTime: null
+    // Açılış 09:00, kapanış 22:00 (her saat başı)
+    const HOURS = [
+      "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
+      "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
+      "21:00", "22:00"
+    ];
+
+    const FALLBACK_STAFF = "Salon Uzmanı";
+
+    // Varsayılan uygulama durumu (kullanıcı adı: isletmeci, şifre: 1234)
+    const DEFAULT_DATA = {
+      credentials: {
+        username: "isletmeci",
+        password: "1234"
+      },
+      profile: {
+        shopName: "İşletme Randevu",
+        phone: "",
+        address: ""
+      },
+      services: [],
+      staff: [],
+      appointments: []
     };
 
-    try {
-      var saved = localStorage.getItem(KEY);
-      if (saved) {
-        var p = JSON.parse(saved);
-        if (p && p.services && p.staff && p.appts) {
-          state.bizName = p.bizName || state.bizName;
-          state.pin = p.pin || state.pin;
-          state.services = p.services;
-          state.staff = p.staff;
-          state.appts = p.appts;
-          state.selSrv = state.services[0] ? state.services[0].id : null;
-          state.selStf = state.staff[0] ? state.staff[0].id : null;
-        }
+    // Türkçe İ/ı karakterlerini normalize eden yardımcı fonksiyon
+    function normalizeUsername(str) {
+      return String(str || "")
+        .trim()
+        .replace(/İ/g, "i")
+        .replace(/I/g, "ı")
+        .toLowerCase()
+        .replace(/ş/g, "s")
+        .replace(/ı/g, "i");
+    }
+
+    // LocalStorage üzerinden verileri güvenli yükle
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return JSON.parse(JSON.stringify(DEFAULT_DATA));
+        const parsed = JSON.parse(raw);
+        return {
+          credentials: {
+            username: parsed.credentials && parsed.credentials.username ? parsed.credentials.username : DEFAULT_DATA.credentials.username,
+            password: parsed.credentials && parsed.credentials.password ? parsed.credentials.password : DEFAULT_DATA.credentials.password
+          },
+          profile: {
+            shopName: parsed.profile && parsed.profile.shopName !== undefined ? parsed.profile.shopName : DEFAULT_DATA.profile.shopName,
+            phone: parsed.profile && parsed.profile.phone !== undefined ? parsed.profile.phone : "",
+            address: parsed.profile && parsed.profile.address !== undefined ? parsed.profile.address : ""
+          },
+          services: Array.isArray(parsed.services) ? parsed.services : [],
+          staff: Array.isArray(parsed.staff) ? parsed.staff : [],
+          appointments: Array.isArray(parsed.appointments) ? parsed.appointments : []
+        };
+      } catch (err) {
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
       }
-    } catch (e) {}
-
-    function save() {
-      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
     }
 
-    function showPanel(which) {
-      var isCust = which === "cust";
-      document.getElementById("panelCust").className = isCust ? "" : "hide";
-      document.getElementById("panelAdm").className = isCust ? "hide" : "";
-      document.getElementById("tabCust").className = isCust ? "active" : "";
-      document.getElementById("tabAdm").className = isCust ? "" : "active";
-      render();
+    let state = loadState();
+    let isAdminLoggedIn = false;
+    let selectedServiceId = state.services[0] ? state.services[0].id : null;
+    let selectedStaff = state.staff[0] ? state.staff[0].name : FALLBACK_STAFF;
+    let selectedSlot = null;
+
+    // Değişiklikleri LocalStorage'a kaydet
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        console.error("Veri kaydedilemedi:", err);
+      }
     }
 
-    function pickSrv(id) { state.selSrv = id; render(); }
-    function pickStf(id) { state.selStf = id; render(); }
-    function pickTime(t) { state.selTime = t; render(); }
-
-    function createAppt() {
-      var name = document.getElementById("cName").value.trim();
-      var phone = document.getElementById("cPhone").value.trim();
-      var msg = document.getElementById("custMsg");
-
-      if (!state.selTime) { msg.textContent = "Lütfen bir saat seçin."; return; }
-      if (!name || !phone) { msg.textContent = "Lütfen ad soyad ve telefon girin."; return; }
-
-      state.appts.push({
-        id: String(Date.now()).slice(-4),
-        name: name,
-        phone: phone,
-        srvId: state.selSrv,
-        stfId: state.selStf,
-        time: state.selTime,
-        status: "Bekliyor"
-      });
-      save();
-      msg.textContent = "Takipsiz Randevu kaydınız alındı! Saat: " + state.selTime;
-      state.selTime = null;
-      document.getElementById("cName").value = "";
-      document.getElementById("cPhone").value = "";
-      render();
+    // Durum mesajı göster
+    function showStatus(elId, message, isError = false) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.textContent = message;
+      el.className = "status-msg " + (isError ? "err" : "ok");
     }
 
-    function loginAdm() {
-      var pin = document.getElementById("admPin").value.trim();
-      if (pin === state.pin) {
-        demoAdm();
+    // Müşteri / İşletmeci sekmeleri arası geçiş
+    function switchTab(tab) {
+      const isCustomer = tab === "customer";
+      document.getElementById("tabCustomer").classList.toggle("active", isCustomer);
+      document.getElementById("tabAdmin").classList.toggle("active", !isCustomer);
+      document.getElementById("customerView").classList.toggle("hidden", !isCustomer);
+      document.getElementById("adminView").classList.toggle("hidden", isCustomer);
+      renderAll();
+    }
+
+    // İşletmeci kullanıcı adı ve şifre doğrulaması
+    function loginAdmin() {
+      const usernameEl = document.getElementById("usernameInput");
+      const passwordEl = document.getElementById("passwordInput");
+      const enteredUser = usernameEl.value.trim();
+      const enteredPass = passwordEl.value.trim();
+
+      const savedUser = state.credentials.username.trim();
+      const isUserMatch =
+        enteredUser.toLowerCase() === savedUser.toLowerCase() ||
+        normalizeUsername(enteredUser) === normalizeUsername(savedUser);
+
+      if (isUserMatch && enteredPass === state.credentials.password) {
+        isAdminLoggedIn = true;
+        usernameEl.value = "";
+        passwordEl.value = "";
+        document.getElementById("loginStatus").className = "status-msg";
+        renderAdmin();
       } else {
-        alert("PIN yanlış (1234)");
+        showStatus("loginStatus", "Kullanıcı adı veya şifre hatalı. Lütfen tekrar deneyin.", true);
       }
     }
 
-    function demoAdm() {
-      document.getElementById("admLogin").className = "hide";
-      document.getElementById("admArea").className = "";
-      renderAdm();
-    }
-
-    function setApptStatus(id, st) {
-      for (var i = 0; i < state.appts.length; i++) {
-        if (state.appts[i].id === id) state.appts[i].status = st;
+    // Enter tuşu ile giriş desteği
+    document.getElementById("usernameInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        document.getElementById("passwordInput").focus();
       }
-      save();
-      renderAdm();
-      render();
-    }
-
-    function delAppt(id) {
-      state.appts = state.appts.filter(function (a) { return a.id !== id; });
-      save();
-      renderAdm();
-      render();
-    }
-
-    function addSrv() {
-      var n = document.getElementById("newSrvName").value.trim();
-      var pr = parseInt(document.getElementById("newSrvPrice").value, 10) || 0;
-      if (!n) return;
-      state.services.push({ id: String(Date.now()), name: n, price: pr });
-      save();
-      document.getElementById("newSrvName").value = "";
-      document.getElementById("newSrvPrice").value = "";
-      render();
-    }
-
-    function saveBiz() {
-      var b = document.getElementById("newBizName").value.trim();
-      if (!b) return;
-      state.bizName = b;
-      save();
-      render();
-      alert("Kaydedildi");
-    }
-
-    function getSrvName(id) {
-      for (var i = 0; i < state.services.length; i++) {
-        if (state.services[i].id === id) return state.services[i].name + " (" + state.services[i].price + " TL)";
+    });
+    document.getElementById("passwordInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        loginAdmin();
       }
-      return "Hizmet";
+    });
+
+    // İşletmeci çıkışı
+    function logoutAdmin() {
+      isAdminLoggedIn = false;
+      renderAdmin();
     }
 
-    function getStfName(id) {
-      for (var i = 0; i < state.staff.length; i++) {
-        if (state.staff[i].id === id) return state.staff[i].name;
-      }
-      return "Uzman";
-    }
+    // Giriş bilgilerini (kullanıcı adı ve şifre) güncelle
+    function saveCredentials() {
+      const newUser = document.getElementById("newUsernameInput").value.trim();
+      const newPass = document.getElementById("newPasswordInput").value.trim();
 
-    function render() {
-      document.getElementById("bizTitle").textContent = state.bizName;
-      document.getElementById("newBizName").value = state.bizName;
-
-      var sHtml = "";
-      for (var i = 0; i < state.services.length; i++) {
-        var s = state.services[i];
-        var cls = s.id === state.selSrv ? "btn-opt sel" : "btn-opt";
-        sHtml += '<button type="button" class="' + cls + '" onclick="pickSrv(\'' + s.id + '\')">' +
-          '<span>' + s.name + '</span><span class="price-pill">' + s.price + ' TL</span></button>';
-      }
-      document.getElementById("srvList").innerHTML = sHtml;
-
-      var fHtml = "";
-      for (var j = 0; j < state.staff.length; j++) {
-        var f = state.staff[j];
-        var fCls = f.id === state.selStf ? "btn-opt sel" : "btn-opt";
-        fHtml += '<button type="button" class="' + fCls + '" onclick="pickStf(\'' + f.id + '\')"><span>' + f.name + '</span></button>';
-      }
-      document.getElementById("stfList").innerHTML = fHtml;
-
-      var busyTimes = [];
-      for (var k = 0; k < state.appts.length; k++) {
-        if (state.appts[k].stfId === state.selStf && state.appts[k].status !== "İptal") {
-          busyTimes.push(state.appts[k].time);
-        }
-      }
-
-      var tHtml = "";
-      for (var m = 0; m < SLOTS.length; m++) {
-        var tm = SLOTS[m];
-        var isBusy = busyTimes.indexOf(tm) !== -1;
-        if (isBusy) {
-          tHtml += '<button type="button" class="slot busy" disabled>' + tm + "</button>";
-        } else {
-          var tCls = state.selTime === tm ? "slot sel" : "slot";
-          tHtml += '<button type="button" class="' + tCls + '" onclick="pickTime(\'' + tm + '\')">' + tm + "</button>";
-        }
-      }
-      document.getElementById("slotList").innerHTML = tHtml;
-      renderAdm();
-    }
-
-    function renderAdm() {
-      var box = document.getElementById("admAppts");
-      if (!box) return;
-      if (state.appts.length === 0) {
-        box.innerHTML = "<p>Randevu yok.</p>";
+      if (!newUser || !newPass) {
+        showStatus("credStatus", "Kullanıcı adı ve şifre alanları boş bırakılamaz.", true);
         return;
       }
-      var h = "";
-      for (var i = 0; i < state.appts.length; i++) {
-        var a = state.appts[i];
-        h += '<div class="appt">' +
-          "<strong>" + a.name + "</strong> (" + a.phone + ")<br/>" +
-          getSrvName(a.srvId) + " • " + getStfName(a.stfId) + " • <strong>" + a.time + "</strong><br/>" +
-          "Durum: <strong>" + a.status + "</strong><br/>" +
-          '<button type="button" class="small-btn ok" onclick="setApptStatus(\'' + a.id + '\', \'Onaylandı\')">Onayla</button>' +
-          '<button type="button" class="small-btn del" onclick="setApptStatus(\'' + a.id + '\', \'İptal\')">İptal</button>' +
-          '<button type="button" class="small-btn del" onclick="delAppt(\'' + a.id + '\')">Sil</button>' +
-          "</div>";
-      }
-      box.innerHTML = h;
-    }
 
-    render();
-  </script>
-</body>
-</html>
+      state.credentials = {
+        username: newUser,
+        password: newPass
+      };
+      saveState();
+      document.getElementById("newPasswordInput").value = "";
+      showStatus("credStatus", 
