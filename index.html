@@ -1,660 +1,783 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kuaför Randevu Sistemi</title>
+  <title>Temassız Girişim — Dijital Randevu Sistemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; }
+    /* ==========================================================================
+       RENK PALETİ DEĞİŞKENLERİ (TEMA RENKLERİNİ BURADAN KOLAYCA DEĞİŞTİREBİLİRSİNİZ)
+       ========================================================================== */
+    :root {
+      --bg-page: #131a24;               /* Sayfa dış arka planı */
+      --bg-widget: #212b38;             /* Ana takvim ve kart yüzeyi (görseldeki koyu lacivert/arduvaz) */
+      --bg-widget-elevated: #283444;    /* İkincil kart ve input alanları */
+      --bg-cell-hover: #2d3a4b;         /* Takvim hücresi üzerine gelince */
+      --border-grid: #374457;           /* Takvim çizgileri ve kenarlıklar */
+      --text-primary: #f8fafc;          /* Ana beyaz metin */
+      --text-secondary: #9ca3af;        /* İkincil / hafta sonu soluk gri metin */
+      --text-muted: #6b7280;            /* Pasif gün numaraları */
+      --accent-primary: #b4cdfa;        /* Görseldeki yumuşak buz mavisi ana buton ve seçili gün rengi */
+      --accent-primary-hover: #9ec0f8;  /* Ana buton hover rengi */
+      --accent-primary-text: #111827;   /* Buz mavisi üzerindeki koyu metin/ikon */
+      --tag-blue-bg: #4b74b8;           /* Takvim içi mavi etkinlik etiketi */
+      --tag-teal-bg: #3b8577;           /* Takvim içi yeşil/turkuaz etkinlik etiketi */
+      --tag-amber-bg: #b4692e;          /* Onay bekleyen / acil randevu etiketi */
+      --danger-bg: #dc2626;             /* Sil / Reddet butonu */
+      --danger-hover: #b91c1c;
+      --success-bg: #16a34a;            /* Onayla / WhatsApp butonu */
+      --success-hover: #15803d;
+      --radius-widget: 26px;
+      --radius-card: 18px;
+      --radius-pill: 9999px;
+      --shadow-widget: 0 20px 45px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: #f4f6f4;
-      color: #16201a;
-      overflow-x: hidden;
-    }
-    .top {
-      background: #113825;
-      color: #fff;
-      padding: 14px;
-      border-bottom: 3px solid #d4af37;
-      position: sticky;
-      top: 0;
-      z-index: 40;
-    }
-    .top-head {
-      max-width: 700px;
-      margin: 0 auto 10px;
-    }
-    .top-brand {
-      font-size: 11px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: #f5e6b3;
-      font-weight: 700;
-    }
-    .top h1 {
-      margin: 2px 0 2px;
-      font-size: 18px;
-      font-weight: 800;
-    }
-    .top p {
-      margin: 0;
-      font-size: 12px;
-      color: #d6e6dd;
-    }
-    .tabs {
-      max-width: 700px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .tabs button {
-      width: 100%;
-      min-width: 0;
-      padding: 10px 8px;
-      border: none;
-      border-radius: 9px;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-      background: #1c5036;
-      color: #fff;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .tabs button.active {
-      background: #d4af37;
-      color: #113825;
-    }
-    .container {
-      max-width: 700px;
-      margin: 16px auto 40px;
-      padding: 0 12px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #dce5df;
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 14px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    }
-    .card h2 {
-      margin: 0 0 10px;
-      font-size: 15px;
-      color: #113825;
-    }
-    .shop-meta {
-      font-size: 13px;
-      color: #36473d;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
-    .shop-meta div {
-      margin-top: 4px;
-    }
-    .empty-note {
-      font-size: 13px;
-      color: #5b6d63;
-      background: #f5f8f6;
-      border: 1px dashed #c7d4cc;
-      border-radius: 9px;
-      padding: 12px;
-    }
-    .option-list {
-      display: grid;
-      gap: 8px;
-    }
-    .option-btn {
-      width: 100%;
+
+    /* Üst Navigasyon / Marka Çubuğu */
+    .topbar {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 16px 10px;
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
       align-items: center;
-      padding: 12px;
-      border: 1.5px solid #cfd9d2;
-      border-radius: 10px;
-      background: #fff;
-      color: #16201a;
-      font-size: 14px;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--accent-primary);
+      color: var(--accent-primary-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 6px 16px rgba(180, 205, 250, 0.25);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .panel-switch-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-widget);
+      padding: 5px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-grid);
+    }
+
+    .panel-tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      font-family: inherit;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
-      text-align: left;
+      transition: all 0.2s ease;
     }
-    .option-btn.selected {
-      border-color: #113825;
-      background: #eef6f1;
+
+    .panel-tab-btn.active {
+      background: var(--accent-primary);
+      color: var(--accent-primary-text);
     }
-    .price-tag {
-      background: #f5e6b3;
-      color: #113825;
-      padding: 4px 8px;
-      border-radius: 7px;
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
+
+    .panel-tab-btn:not(.active):hover {
+      color: var(--text-primary);
     }
-    .staff-grid {
+
+    /* Ana Konteyner */
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 12px 16px 48px;
+    }
+
+    .grid-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+      align-items: start;
     }
-    .slots-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    @media (min-width: 520px) {
-      .slots-grid {
-        grid-template-columns: repeat(4, 1fr);
+
+    @media (max-width: 960px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
       }
     }
-    .slot-btn {
-      padding: 10px 6px;
-      border: 1.5px solid #cfd9d2;
-      border-radius: 9px;
-      background: #fff;
-      color: #16201a;
-      font-size: 13px;
+
+    /* Görseldeki Ana Takvim Kartı Stili */
+    .calendar-widget {
+      background-color: var(--bg-widget);
+      border-radius: var(--radius-widget);
+      box-shadow: var(--shadow-widget);
+      border: 1px solid var(--border-grid);
+      overflow: hidden;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 24px 16px;
+      gap: 12px;
+    }
+
+    .calendar-month-title {
+      font-size: 1.55rem;
       font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .calendar-controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-arrow-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .nav-arrow-btn:hover {
+      background: var(--bg-widget-elevated);
+      color: var(--text-primary);
+    }
+
+    /* Görseldeki sağ üst büyük yuvarlak '+' hap butonu */
+    .pill-plus-btn {
+      width: 74px;
+      height: 44px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background-color: var(--accent-primary);
+      color: var(--accent-primary-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.15s ease;
+      box-shadow: 0 4px 14px rgba(180, 205, 250, 0.25);
+    }
+
+    .pill-plus-btn:hover {
+      background-color: var(--accent-primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .pill-plus-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Haftanın Günleri Başlığı (P S Ç P C C P) */
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      padding: 6px 0 10px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-grid);
+    }
+
+    /* Takvim Izgarası */
+    .calendar-days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .calendar-cell {
+      min-height: 76px;
+      border-right: 1px solid var(--border-grid);
+      border-bottom: 1px solid var(--border-grid);
+      padding: 6px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calendar-cell:nth-child(7n) {
+      border-right: none;
+    }
+
+    .calendar-cell:hover {
+      background-color: var(--bg-cell-hover);
+    }
+
+    .calendar-cell.selected-cell {
+      background-color: rgba(180, 205, 250, 0.08);
+    }
+
+    .day-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+
+    .calendar-cell.other-month .day-number {
+      color: var(--text-muted);
+    }
+
+    /* Görseldeki 28 numaralı gün gibi buz mavisi dairesel rozet */
+    .calendar-cell.is-selected .day-number {
+      background-color: var(--accent-primary);
+      color: var(--accent-primary-text);
+      font-weight: 700;
+    }
+
+    .calendar-cell.is-today:not(.is-selected) .day-number {
+      border: 1.5px solid var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    /* Takvim Hücresi İçi KVKK Maskeli Randevu Etiketleri */
+    .cell-events {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .event-pill {
+      width: 100%;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+      line-height: 1.25;
+    }
+
+    .event-pill.confirmed {
+      background-color: var(--tag-teal-bg);
+    }
+
+    .event-pill.pending {
+      background-color: var(--tag-blue-bg);
+    }
+
+    .event-pill.urgent {
+      background-color: var(--tag-amber-bg);
+    }
+
+    .event-more-badge {
+      font-size: 0.65rem;
+      color: var(--accent-primary);
+      font-weight: 600;
       text-align: center;
     }
-    .slot-btn.selected {
-      background: #113825;
-      color: #fff;
-      border-color: #113825;
+
+    .calendar-footer-legend {
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      background: rgba(17, 24, 39, 0.25);
     }
+
+    .legend-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .legend-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      margin-right: 5px;
+    }
+
+    /* Sağ Panel / Form Kartları */
+    .card {
+      background-color: var(--bg-widget);
+      border-radius: var(--radius-widget);
+      border: 1px solid var(--border-grid);
+      padding: 22px;
+      box-shadow: var(--shadow-widget);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      background-color: var(--bg-widget-elevated);
+      border: 1px solid var(--border-grid);
+      color: var(--text-primary);
+      padding: 11px 14px;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      border-color: var(--accent-primary);
+    }
+
+    /* Saat Slotları Izgarası */
+    .slots-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .calendar-cell {
+        min-height: 68px;
+        padding: 4px 2px;
+      }
+      .event-pill {
+        font-size: 0.62rem;
+        padding: 2px 3px;
+      }
+    }
+
+    .slot-btn {
+      padding: 10px 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border-grid);
+      background-color: var(--bg-widget-elevated);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: all 0.15s ease;
+    }
+
+    .slot-btn:hover:not(:disabled) {
+      border-color: var(--accent-primary);
+      background-color: var(--bg-cell-hover);
+    }
+
+    .slot-btn.selected {
+      background-color: var(--accent-primary);
+      color: var(--accent-primary-text);
+      border-color: var(--accent-primary);
+    }
+
     .slot-btn:disabled {
-      background: #eef1ef;
-      color: #9aa69f;
-      border-color: #e0e6e2;
+      opacity: 0.42;
       cursor: not-allowed;
       text-decoration: line-through;
     }
-    .field {
-      margin-bottom: 10px;
+
+    .slot-btn.urgent-unlocked {
+      border-color: #f59e0b;
+      background-color: rgba(245, 158, 11, 0.14);
     }
-    .field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      color: #24332a;
+
+    .slot-sub {
+      font-size: 0.66rem;
+      font-weight: 500;
+      opacity: 0.85;
     }
-    .field input,
-    .field textarea {
+
+    /* Aciliyet Durumu Butonu */
+    .emergency-toggle-btn {
       width: 100%;
-      padding: 10px 12px;
-      border: 1.5px solid #c6d1ca;
-      border-radius: 9px;
-      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px dashed #f59e0b;
+      background: rgba(245, 158, 11, 0.1);
+      color: #fbbf24;
       font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      transition: all 0.15s ease;
     }
-    .field textarea {
-      resize: vertical;
-      min-height: 68px;
+
+    .emergency-toggle-btn.active {
+      background: #f59e0b;
+      color: #111827;
+      border-style: solid;
     }
+
+    /* Hizmet Seçim Kartları */
+    .services-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .services-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .service-chip {
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border-grid);
+      background: var(--bg-widget-elevated);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.84rem;
+      transition: all 0.15s ease;
+      text-align: left;
+    }
+
+    .service-chip.selected {
+      border-color: var(--accent-primary);
+      background: rgba(180, 205, 250, 0.16);
+    }
+
+    .service-price {
+      font-weight: 700;
+      color: var(--accent-primary);
+      white-space: nowrap;
+    }
+
+    /* Ana Butonlar */
     .btn-primary {
       width: 100%;
-      padding: 12px;
+      padding: 14px 18px;
+      border-radius: var(--radius-pill);
       border: none;
-      border-radius: 10px;
-      background: #113825;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .btn-gold {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: #d4af37;
-      color: #113825;
-      font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .status-msg {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 9px;
-      font-size: 13px;
-      font-weight: 600;
-      display: none;
-    }
-    .status-msg.ok {
-      display: block;
-      background: #e6f4ec;
-      color: #114b2b;
-      border: 1px solid #b5dec6;
-    }
-    .status-msg.err {
-      display: block;
-      background: #fdeceb;
-      color: #842029;
-      border: 1px solid #f5c2c7;
-    }
-    .manage-list {
-      margin-top: 12px;
-      display: grid;
-      gap: 6px;
-    }
-    .manage-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border: 1px solid #e1e8e4;
-      border-radius: 8px;
-      background: #fafcfb;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .appt-item {
-      border: 1px solid #e1e8e4;
-      border-radius: 10px;
-      padding: 10px;
-      margin-bottom: 8px;
-      background: #fafcfb;
-    }
-    .appt-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 13px;
+      background-color: var(--accent-primary);
+      color: var(--accent-primary-text);
+      font-family: inherit;
+      font-size: 0.95rem;
       font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.15s ease, transform 0.1s ease;
     }
-    .appt-sub {
-      font-size: 12px;
-      color: #46574d;
-      margin-top: 4px;
-      line-height: 1.4;
+
+    .btn-primary:hover {
+      background-color: var(--accent-primary-hover);
     }
-    .appt-actions {
+
+    .btn-whatsapp {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background-color: #25d366;
+      color: #0b141a;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: filter 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn-whatsapp:hover {
+      filter: brightness(1.06);
+    }
+
+    .btn-sm {
+      padding: 7px 12px;
+      border-radius: 10px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+    }
+
+    .btn-sm:hover {
+      opacity: 0.9;
+    }
+
+    .btn-confirm {
+      background: var(--success-bg);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      color: #fff;
+    }
+
+    /* İşletme Paneli Düzeni */
+    .business-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .appointment-item {
+      background: var(--bg-widget-elevated);
+      border: 1px solid var(--border-grid);
+      border-radius: 16px;
+      padding: 14px;
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    .appt-actions button,
-    .appt-actions a,
-    .btn-mini-del {
-      padding: 6px 10px;
-      border: none;
-      border-radius: 7px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
       align-items: center;
-    }
-    .btn-approve { background: #1e7e46; color: #fff; }
-    .btn-cancel  { background: #e0a800; color: #16201a; }
-    .btn-wa      { background: #128c7e; color: #fff; }
-    .btn-delete,
-    .btn-mini-del { background: #c92a2a; color: #fff; }
-    .btn-logout {
-      background: #eef2ef;
-      color: #16201a;
-      border: 1px solid #cbd5ce;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .row-between {
-      display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+      gap: 12px;
       margin-bottom: 10px;
     }
-    .row-between h2 { margin: 0; }
-    .hidden { display: none !important; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .badge-pending {
+      background: rgba(75, 116, 184, 0.25);
+      color: #93c5fd;
+    }
+
+    .badge-confirmed {
+      background: rgba(59, 133, 119, 0.28);
+      color: #6ee7b7;
+    }
+
+    .badge-urgent {
+      background: rgba(245, 158, 11, 0.25);
+      color: #fcd34d;
+    }
+
+    .inline-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 540px) {
+      .inline-form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .manage-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--bg-widget-elevated);
+      border: 1px solid var(--border-grid);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+
+    /* Modal & Bildirim (Toast) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 13, 20, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--bg-widget);
+      border: 1px solid var(--border-grid);
+      border-radius: var(--radius-widget);
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: var(--shadow-widget);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: var(--bg-widget-elevated);
+      border: 1px solid var(--accent-primary);
+      color: var(--text-primary);
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      z-index: 2000;
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.25s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
-  <header class="top">
-    <div class="top-head">
-      <div class="top-brand">KUAFÖR RANDEVU SİSTEMİ</div>
-      <h1 id="headerShopName">Kuaför Randevu</h1>
-      <p>09:00 – 22:00 Saatleri Arası Randevu</p>
+
+  <!-- Üst Başlık ve Panel Geçişi -->
+  <header class="topbar">
+    <div class="brand-box">
+      <div class="brand-logo" id="headerBrandInitial">T</div>
+      <div>
+        <div class="brand-title" id="headerBusinessName">Temassız Girişim</div>
+        <div class="brand-subtitle" id="headerBusinessHours">Çalışma Saatleri: 09:00 - 21:00 • Online Randevu</div>
+      </div>
     </div>
-    <nav class="tabs">
-      <button type="button" id="tabCustomer" class="active">Müşteri Paneli</button>
-      <button type="button" id="tabAdmin">İşletmeci Paneli</button>
-    </nav>
+
+    <div class="panel-switch-group">
+      <button type="button" class="panel-tab-btn active" id="tabCustomerBtn" onclick="switchToCustomer()">
+        Müşteri Paneli
+      </button>
+      <button type="button" class="panel-tab-btn" id="tabBusinessBtn" onclick="openBusinessLogin()">
+        İşletme Paneli
+      </button>
+    </div>
   </header>
 
-  <main class="container">
-    <!-- MÜŞTERİ PANELİ -->
-    <section id="customerView">
-      <div class="card">
-        <h2 id="infoCardTitle">İşletme Bilgileri</h2>
-        <div class="shop-meta">
-          <div><strong>Adres:</strong> <span id="viewAddress">-</span></div>
-          <div><strong>Telefon:</strong> <span id="viewPhone">-</span></div>
-          <div><strong>Çalışma Saatleri:</strong> 09:00 – 22:00</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>1. Hizmet Seçin</h2>
-        <div class="option-list" id="serviceList"></div>
-      </div>
-
-      <div class="card">
-        <h2>2. Uzman / Personel Seçin</h2>
-        <div class="staff-grid" id="staffList"></div>
-      </div>
-
-      <div class="card">
-        <h2>3. Saat Seçin (09:00 – 22:00)</h2>
-        <div class="slots-grid" id="slotList"></div>
-      </div>
-
-      <div class="card">
-        <h2>4. Bilgileriniz</h2>
-        <div class="field">
-          <label for="custName">Ad Soyad</label>
-          <input type="text" id="custName" placeholder="Adınız Soyadınız" />
-        </div>
-        <div class="field">
-          <label for="custPhone">Telefon Numarası</label>
-          <input type="tel" id="custPhone" placeholder="05xx xxx xx xx" />
-        </div>
-        <button type="button" class="btn-primary" id="btnCreateAppt">Randevuyu Onayla</button>
-        <div id="custStatus" class="status-msg"></div>
-      </div>
-    </section>
-
-    <!-- İŞLETMECİ PANELİ -->
-    <section id="adminView" class="hidden">
-      <div class="card" id="adminLoginCard">
-        <h2>İşletmeci Girişi</h2>
-        <div class="field">
-          <label for="userInput">Kullanıcı Adı</label>
-          <input type="text" id="userInput" placeholder="Kullanıcı adınızı girin" autocomplete="username" />
-        </div>
-        <div class="field">
-          <label for="passInput">Şifre</label>
-          <input type="password" id="passInput" placeholder="Şifrenizi girin" autocomplete="current-password" />
-        </div>
-        <button type="button" class="btn-primary" id="btnLogin">Giriş Yap</button>
-        <div id="loginStatus" class="status-msg"></div>
-      </div>
-
-      <div id="adminDashboard" class="hidden">
-        <div class="card">
-          <div class="row-between">
-            <h2>Dükkan Bilgileri</h2>
-            <button type="button" class="btn-logout" id="btnLogout">Çıkış</button>
-          </div>
-          <div class="field">
-            <label for="shopNameInput">Dükkan / Şube Adı</label>
-            <input type="text" id="shopNameInput" placeholder="Örn: Yıldız Kuaför Salonu" />
-          </div>
-          <div class="field">
-            <label for="shopPhoneInput">İletişim Telefonu</label>
-            <input type="tel" id="shopPhoneInput" placeholder="05xx xxx xx xx" />
-          </div>
-          <div class="field">
-            <label for="shopAddressInput">Dükkan Adresi</label>
-            <textarea id="shopAddressInput" placeholder="Mahalle, cadde, sokak, no, ilçe/il"></textarea>
-          </div>
-          <button type="button" class="btn-gold" id="btnSaveProfile">Dükkan Bilgilerini Kaydet</button>
-          <div id="profileStatus" class="status-msg"></div>
-        </div>
-
-        <div class="card">
-          <h2>Hizmetler ve Fiyatlar</h2>
-          <div class="field">
-            <label for="newServiceName">Hizmet Adı</label>
-            <input type="text" id="newServiceName" placeholder="Örn: Fön, Kesim, Boya, Manikür..." />
-          </div>
-          <div class="field">
-            <label for="newServicePrice">Ücret (TL)</label>
-            <input type="number" id="newServicePrice" placeholder="Örn: 350" min="0" />
-          </div>
-          <button type="button" class="btn-primary" id="btnAddService">Hizmet Ekle</button>
-          <div id="serviceStatus" class="status-msg"></div>
-          <div class="manage-list" id="adminServiceList"></div>
-        </div>
-
-        <div class="card">
-          <h2>Personel / Uzman Listesi</h2>
-          <div class="field">
-            <label for="newStaffName">Uzman Adı</label>
-            <input type="text" id="newStaffName" placeholder="Örn: Ayşe Hanım, Ahmet Usta..." />
-          </div>
-          <button type="button" class="btn-primary" id="btnAddStaff">Personel Ekle</button>
-          <div id="staffStatus" class="status-msg"></div>
-          <div class="manage-list" id="adminStaffList"></div>
-        </div>
-
-        <div class="card">
-          <h2>Gelen Randevular</h2>
-          <div id="adminAppointments"></div>
-        </div>
-
-        <div class="card">
-          <h2>Giriş Bilgilerini Değiştir</h2>
-          <div class="field">
-            <label for="newUsernameInput">Yeni Kullanıcı Adı</label>
-            <input type="text" id="newUsernameInput" placeholder="Yeni kullanıcı adı" />
-          </div>
-          <div class="field">
-            <label for="newPasswordInput">Yeni Şifre</label>
-            <input type="password" id="newPasswordInput" placeholder="Yeni şifre" />
-          </div>
-          <button type="button" class="btn-gold" id="btnUpdateCreds">Giriş Bilgilerini Kaydet</button>
-          <div id="credStatus" class="status-msg"></div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    (function () {
-      var STORAGE_KEY = "kuafor_randevu_v6";
-
-      var HOURS = [
-        "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
-        "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
-        "21:00", "22:00"
-      ];
-
-      function getDefaultData() {
-        return {
-          credentials: {
-            username: "isletmeci",
-            password: "1234",
-            isCustom: false
-          },
-          profile: {
-            shopName: "Kuaför Salonu",
-            phone: "Belirtilmedi",
-            address: "Belirtilmedi"
-          },
-          services: [],
-          staff: [],
-          appointments: []
-        };
-      }
-
-      function normalizeUser(val) {
-        return String(val || "")
-          .trim()
-          .toLowerCase()
-          .replace(/ş/g, "s")
-          .replace(/ı/g, "i")
-          .replace(/İ/g, "i");
-      }
-
-      function formatWaPhone(rawPhone) {
-        var digits = String(rawPhone || "").replace(/\D/g, "");
-        if (!digits) return "";
-        if (digits.indexOf("90") === 0 && digits.length >= 12) return digits;
-        if (digits.indexOf("0") === 0) return "90" + digits.slice(1);
-        if (digits.length === 10) return "90" + digits;
-        return digits;
-      }
-
-      function buildApprovalWaUrl(appt, shopName) {
-        var phone = formatWaPhone(appt.customerPhone);
-        var text =
-          "Merhaba " + appt.customerName + ", " +
-          (shopName || "Salonumuz") + " için " +
-          appt.time + " saatli (" + appt.serviceName + ") randevunuz onaylanmıştır.";
-        var encoded = encodeURIComponent(text);
-        return phone
-          ? "https://wa.me/" + phone + "?text=" + encoded
-          : "https://wa.me/?text=" + encoded;
-      }
-
-      function loadState() {
-        var def = getDefaultData();
-        try {
-          var raw = window.localStorage ? localStorage.getItem(STORAGE_KEY) : null;
-          if (!raw) return def;
-          var parsed = JSON.parse(raw);
-          return {
-            credentials: Object.assign({}, def.credentials, parsed.credentials || {}),
-            profile: Object.assign({}, def.profile, parsed.profile || {}),
-            services: Array.isArray(parsed.services) ? parsed.services : [],
-            staff: Array.isArray(parsed.staff) ? parsed.staff : [],
-            appointments: Array.isArray(parsed.appointments) ? parsed.appointments : []
-          };
-        } catch (e) {
-          return def;
-        }
-      }
-
-      var state = loadState();
-      var isAdminLoggedIn = false;
-      var selectedServiceId = state.services.length ? state.services[0].id : null;
-      var selectedStaff = state.staff.length ? state.staff[0] : "Salon Uzmanı";
-      var selectedSlot = null;
-
-      function saveState() {
-        try {
-          if (window.localStorage) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-          }
-        } catch (e) {}
-      }
-
-      function showStatus(elId, message, isError) {
-        var el = document.getElementById(elId);
-        if (!el) return;
-        el.textContent = message;
-        el.className = "status-msg " + (isError ? "err" : "ok");
-      }
-
-      function switchTab(tab) {
-        var isCustomer = tab === "customer";
-        document.getElementById("tabCustomer").classList.toggle("active", isCustomer);
-        document.getElementById("tabAdmin").classList.toggle("active", !isCustomer);
-        document.getElementById("customerView").classList.toggle("hidden", !isCustomer);
-        document.getElementById("adminView").classList.toggle("hidden", isCustomer);
-        renderAll();
-      }
-
-      function loginAdmin() {
-        var enteredUser = normalizeUser(document.getElementById("userInput").value);
-        var enteredPass = document.getElementById("passInput").value.trim();
-
-        var savedUser = normalizeUser(state.credentials.username);
-        var savedPass = state.credentials.password;
-
-        var userMatches = state.credentials.isCustom
-          ? enteredUser === savedUser
-          : (enteredUser === savedUser || enteredUser === "admin");
-
-        if (userMatches && enteredPass === savedPass) {
-          isAdminLoggedIn = true;
-          document.getElementById("userInput").value = "";
-          document.getElementById("passInput").value = "";
-          document.getElementById("loginStatus").className = "status-msg";
-          renderAdmin();
-        } else {
-          showStatus("loginStatus", "Kullanıcı adı veya şifre hatalı.", true);
-        }
-      }
-
-      function logoutAdmin() {
-        isAdminLoggedIn = false;
-        renderAdmin();
-      }
-
-      function updateCredentials() {
-        var newUser = document.getElementById("newUsernameInput").value.trim();
-        var newPass = document.getElementById("newPasswordInput").value.trim();
-
-        if (newUser.length < 3) {
-          showStatus("credStatus", "Kullanıcı adı en az 3 karakter olmalıdır.", true);
-          return;
-        }
-        if (newPass.length < 4) {
-          showStatus("credStatus", "Şifre en az 4 karakter olmalıdır.", true);
-          return;
-        }
-
-        state.credentials = {
-          username: newUser,
-          password: newPass,
-          isCustom: true
-        };
-        saveState();
-        document.getElementById("newUsernameInput").value = "";
-        document.getElementById("newPasswordInput").value = "";
-        showStatus("credStatus", "Yeni kullanıcı adı ve şifre kaydedildi. Sonraki girişlerde geçerli olacaktır.");
-      }
-
-      function renderHeaderAndInfo() {
-        var shopName = state.profile.shopName || "Kuaför Salonu";
-        document.title = shopName + " — Randevu";
-        document.getElementById("headerShopName").textContent = shopName;
-        document.getElementById("infoCardTitle").textContent = shopName + " — Bilgiler";
-        document.getElementById("viewAddress").textContent = state.profile.address || "Belirtilmedi";
-        document.getElementById("viewPhone").textContent = state.profile.phone || "Belirtilmedi";
-      }
-
-      function renderServices() {
-        var wrap = document.getElementById("serviceList");
-        wrap.innerHTML = "";
-        if (!state.services.length) {
-          selectedServiceId = null;
-          var empty = document.createElement("div");
-          empty.className = "empty-note";
-          empty.textContent = "İşletme henüz hizmet listesi eklemedi.";
-          wrap.appendChild(empty);
-          return;
-        }
-        var exists = state.services.some(function (s) { return s.id === selectedServiceId; });
-        if (!exists) {
-          selectedServiceId = state.services[0].id;
-        }
-        state.services.forEach(function (srv) {
-          var btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "option-btn" + (srv.id === selectedServiceId ? " selected" : "");
-
-          var nameSpan = document.createElement("span");
-          nameSpan.textContent = srv.name;
-
-          var priceSpan = document.createElement("span");
-          priceSpan.className = "price-tag";
-          priceSpan.textContent = Number(srv.price) + " TL";
-
-          btn.appendChild(nameSpan);
-          btn.appendChild(priceSpan);
-          btn.addEventListener("click", function () {
-            selectedServiceId = srv.id;
-           
+  <!-- ========================================================================
+       1. PANEL: MÜŞTERİ PANELİ (SAYFA AÇILIR AÇILMAZ GÖRÜNÜR)
+       ======================================================================== -->
+  <main class="container" id="customerPanelView">
+    <div class="grid-layout">
+      <!-- Sol Kolon: Görseldeki Koyu Lacivert Aylık Takvim -->
+      <section class="calendar-widget" aria-label="Randevu Takvimi">
+        <div class="calendar-header">
+          <h1 class="calendar-month-title" id="custMonthTitle">Kasım 2026</h1>
+          <div class="calendar-controls">
+            <button type="button" class="nav-arrow-btn" id="custPrevMonth" title="Önceki Ay" aria-label="Önceki Ay">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button type="button" class="nav-arrow-btn" id="custNextMonth" title="Sonraki Ay" aria-label="Sonraki Ay">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" 
